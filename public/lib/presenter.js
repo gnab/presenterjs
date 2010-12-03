@@ -1,246 +1,134 @@
-var presenter = (function () {
-  var dependencies = [
-    'vendor/jquery-1.4.4.min', 
-    'vendor/showdown',
-    'vendor/html-sanitizer-minified',
-    'vendor/highlight.min'
-  ];
+define(function () {
 
-  var container, sidebar, editor, presenter, shadow, slide, content;
+  var dependenciesLoaded = false, delayedCreators = [];
 
-  function loadDependencies() {
-    require(dependencies);
+  function create(id, callback) {
+    if (dependenciesLoaded) {
+      createPresenter(id, callback);
+    }
+    else {
+      delayedCreators.push({id: id, callback: callback});
+    }
+  }
 
-    require.ready(function () {
-      loadEnvironment();
+  function createPresenter(id, callback) {
+    var element = $('#' + id), 
+        slide = createSlide(presenter, element);
+
+    element.css({
+      background: '#aaa',
+      height: '100%',
+      position: 'absolute'
+    });
+
+    callback({
+      resize: function (left, top, width, height) {
+        resizeElement(element, left, top, width, height);
+        slide.resize(width, height);
+      },
+      content: function (content) {
+        if (content !== undefined) {
+          slide.content(content);
+        }
+        return slide.content();
+      }
     });
   }
 
-  function loadEnvironment() {
-    bindToElements(); 
+  function createSlide(presenter, presenterContainer) {
+    var slideElement = $('<div />'),
+        contentElement = $('<div />'),
+        shadowElement = $('<div />'),
+        scaleSlide = createScaler(slideElement),
+        convertContent = createContentConverter(contentElement),
+        content = '';
 
-    loadLayout();
-    loadMarkdown();
+    styleShadow(shadowElement);
+    presenterContainer.append(shadowElement);
+
+    slideElement.css({
+      background: '#fff',
+      border: '1px solid transparent',
+      position: 'relative',
+      overflow: 'hidden'
+    });
+
+    contentElement.css({
+      padding: '2em'
+    });
+
+    slideElement.append(contentElement);
+    presenterContainer.append(slideElement);
+
+    return {
+      resize: function (width, height) {
+        resizeSlide(slideElement, shadowElement, width, height, scaleSlide);
+      },
+      content: function (content) {
+        if (content !== undefined) {
+          slideContent = content;
+          convertContent(content);
+        }
+        return slideContent;
+      }
+    };
   }
 
-  function bindToElements() {
-    container = $(window);
+  function createScaler(element) {
+    var scaler;
 
-    sidebar = $('#sidebar');
-    editor = $('#editor');
-
-    presenter = $('#presenter');
-    shadow = $('#shadow');
-    slide = $('#slide');
-    content = $('#content');
-  }
-
-  function loadLayout() {
-    loadSlide();
-
-    container.resize(updateLayout);
-    updateLayout();
-  }
-
-  function loadSlide() {
-    loadSlideScaling();
-    loadSlideShadow();
-  }
-
-  function loadSlideScaling() {
-    var style = {};
-
-    if (slideSupportsProperty('WebkitTransform')) {
-      loadSlideScalingForEngine('webkit');
+    if (propertySupported('WebkitTransform')) {
+      scaler = createScalerForEngine(element, 'webkit');
     }
-    else if (slideSupportsProperty('MozTransform')) {
-      loadSlideScalingForEngine('moz');
+    else if (propertySupported('MozTransform')) {
+      scaler = createScalerForEngine(element, 'moz');
     }
-    else if (slideSupportsProperty('OTransform')) {
-      loadSlideScalingForEngine('o');
+    else if (propertySupported('OTransform')) {
+      scaler = createScalerForEngine(element, 'o');
     }
-    else if (slideSupportsProperty('transform')) {
-      loadSlideScalingForEngine();
+    else if (propertySupported('transform')) {
+      scaler = createScalerForEngine(element);
     }
-    else if (slideSupportsProperty('zoom')) {
-      scaleSlide = function (scale) {
-        slide.css({'zoom': scale});;
+    else if (propertySupported('zoom')) {
+      scaler = function (scale) {
+        element.css({'zoom': scale});
       }
     }
 
-    slide.css(style);
+    return scaler;
   }
 
-  function slideSupportsProperty(property) {
-    return slide[0].style[property] !== undefined;
-  }
+  function createScalerForEngine(element, engine) {
+    var style = {}, scaler;
 
-  function loadSlideScalingForEngine(engine) {
-    var style = {};
     engine = formatEngineString(engine);
-    scaleSlide = function (scale) {
+
+    scaler = function (scale) {
       var style = {};
-      style[engine + 'transform'] = 'scale(' + (scale) + ')';
-      slide.css(style);
+      style[engine + 'transform'] = 
+        'scale(' + scale + ')';
+      element.css(style);
     };
+
     style[engine + 'transform-origin'] = '0 0';
-    slide.css(style);
+    element.css(style);
+
+    return scaler;
   }
 
-  function loadSlideShadow() {
-    if (slideSupportsProperty('WebkitTransform')) {
-      loadSlideShadowForEngine('webkit');
-    }
-    else if (slideSupportsProperty('MozTransform')) {
-      loadSlideShadowForEngine('moz');
-    }
-    else if (slideSupportsProperty('transform')) {
-      loadSlideShadowForEngine();
-    }
-  }
-
-  function loadSlideShadowForEngine(engine) {
-    var style = {};
-    engine = formatEngineString(engine);
-    style[engine + 'box-shadow'] = '0 0 20px #777';
-    slide.css(style);
-  }
-
-  function formatEngineString(engine) {
-    if (engine !== undefined) {
-      return '-' + engine + '-';
-    }
-    else {
-      return '';
-    }
-  }
-
-  function updateLayout() {
-    resizeSidebar();
-
-    resizePresenter(
-      sidebar.outerWidth(), 
-      0, 
-      container.width() - sidebar.outerWidth(),
-      container.height()
-    );
-  }
-
-  function resizeSidebar() {
-    var width = Math.floor(container.width() * 0.33);
-
-    sidebar.css({
-      width: width + 'px'
-    });
-
-    resizeEditor(width, container.height());
-  }
-
-  function resizeEditor(width, height) {
-    var margin = 10;
-
-    width -= margin * 2;
-    height -= margin * 2;
-
-    editor.css({
-      width: width + 'px',
-      height: height + 'px',
-      left: margin + 'px',
-      top: margin + 'px'
-    });
-  }
-
-  function resizePresenter(left, top, width, height) {
-    presenter.css({
-      width: width + 'px',
-      height: height + 'px',
-      left: left + 'px',
-      top: top + 'px'
-    });
-
-    resizeSlide(width, height);
-  }
-
-  function resizeSlide(presenterWidth, presenterHeight) {
-    var dimensions;
-       
-    dimensions = calculateSlideDimensions(presenterWidth, presenterHeight);
-
-    shadow.css({
-      width: dimensions.width * dimensions.scale + 'px',
-      height: dimensions.height * dimensions.scale + 'px', 
-      left: dimensions.left + 'px',
-      top: dimensions.top + 'px'
-    });
-
-    slide.css({
-      width: dimensions.width + 'px',
-      height: dimensions.height + 'px', 
-      left: dimensions.left + 'px',
-      top: dimensions.top + 'px'
-    });
-
-    scaleSlide(dimensions.scale);
-  }
-
-  function calculateSlideDimensions(presenterWidth, presenterHeight) {
-    var slideWidth, slideHeight, slideLeft, slideTop, 
-        widthFactor = 4, heightFactor = 3,
-        gutterSize = 20, zoomFactor;
-
-    if (presenterWidth / widthFactor > presenterHeight / heightFactor) {
-      slideHeight = presenterHeight;
-      slideWidth = slideHeight / heightFactor * widthFactor;
-    } 
-    else {
-      slideWidth = presenterWidth;
-      slideHeight = slideWidth / widthFactor * heightFactor;
-    }
-
-    zoomFactor = slideHeight / 6;
-
-    gutterSize = gutterSize * zoomFactor / 100;
-
-    slideWidth -= gutterSize * 2;
-    slideHeight -= gutterSize * 2;
-
-    slideLeft = (presenterWidth - slideWidth) / 2;
-    slideTop = (presenterHeight - slideHeight) / 2;
-
-    slideHeight = slideHeight * 100 / zoomFactor;
-    slideWidth = slideWidth * 100 / zoomFactor;
-
-    return {
-      left: slideLeft,
-      top: slideTop,
-      width: slideWidth,
-      height: slideHeight,
-      scale: zoomFactor / 100,
-    }
-  }
-
-  function loadMarkdown() {
+  function createContentConverter(contentElement) {
     var converter = new Showdown.converter();
 
-    var convert = function () {
-      var markdown = editor.val(),
-          html = converter.makeHtml(markdown),
+    return function (content) {
+      var html = converter.makeHtml(content),
           sanitizedHtml = sanitizeHtml(html);
 
-      //localStorage['markdown'] = markdown;
-      
-      content.html(sanitizedHtml);
-      $('#content code').each(function(i, e) {
+      contentElement.html(sanitizedHtml);
+
+      contentElement.find('code').each(function(i, e) {
         hljs.highlightBlock(e, '  ');
       });
-    };
-
-    editor.bind("keyup", convert);
-    editor.bind("paste", convert);
-    
-    // editor.val(localStorage['markdown']);
-
-    convert();
+    }
   }
 
   function sanitizeHtml(html) {
@@ -257,9 +145,127 @@ var presenter = (function () {
     return id; 
   }
 
+  function styleShadow(shadow) {
+    var style = {}, engine;
+
+    if (propertySupported('WebkitBoxShadow')) {
+      engine = 'webkit';
+    }
+    else if (propertySupported('MozBoxShadow')) {
+      engine = 'moz'
+    }
+    else if (propertySupported('BoxShadow')) {
+      engine = '';
+    }
+
+    if (engine !== undefined) {
+      engine = formatEngineString(engine);
+      style[engine + 'box-shadow'] = '0 0 20px #777';
+    }
+  
+    style['border'] = '1px solid transparent';
+    style['position'] = 'absolute';
+
+    shadow.css(style);
+  }
+
+  function propertySupported(property) {
+    return document.body.style[property] !== undefined;
+  }
+
+  function formatEngineString(engine) {
+    if (engine !== undefined) {
+      return '-' + engine + '-';
+    }
+    else {
+      return '';
+    }
+  }
+
+  function resizeSlide(element, shadow, width, height, scaleSlide) {
+    var dimensions = calculateSlideDimensions(width, height); 
+
+    resizeElement(element, dimensions.left, dimensions.top,
+      dimensions.width, dimensions.height);
+
+    resizeElement(shadow, dimensions.left, dimensions.top,
+      dimensions.width * dimensions.scale,
+      dimensions.height * dimensions.scale);
+
+    scaleSlide(dimensions.scale);
+  }
+
+  function calculateSlideDimensions(containerWidth, containerHeight) {
+    var slideWidth, slideHeight, slideLeft, slideTop, 
+        widthFactor = 4, heightFactor = 3,
+        gutterSize = 20, zoomFactor;
+
+    if (containerWidth / widthFactor > containerHeight / heightFactor) {
+      slideHeight = containerHeight;
+      slideWidth = slideHeight / heightFactor * widthFactor;
+    } 
+    else {
+      slideWidth = containerWidth;
+      slideHeight = slideWidth / widthFactor * heightFactor;
+    }
+
+    zoomFactor = slideHeight / 6;
+
+    gutterSize = gutterSize * zoomFactor / 100;
+
+    slideWidth -= gutterSize * 2;
+    slideHeight -= gutterSize * 2;
+
+    slideLeft = (containerWidth - slideWidth) / 2;
+    slideTop = (containerHeight - slideHeight) / 2;
+
+    slideHeight = slideHeight * 100 / zoomFactor;
+    slideWidth = slideWidth * 100 / zoomFactor;
+
+    return {
+      left: slideLeft,
+      top: slideTop,
+      width: slideWidth,
+      height: slideHeight,
+      scale: zoomFactor / 100,
+    }
+  }
+
+  function resizeElement(element, left, top, width, height) {
+    element.css({
+      left: left + 'px',
+      top: top + 'px',
+      width: width + 'px',
+      height: height + 'px',
+    });
+  }
+
+  function loadDependencies() {
+    require([
+      'vendor/jquery-1.4.4.min', 
+      'vendor/showdown',
+      'vendor/html-sanitizer-minified',
+      'vendor/highlight.min'
+    ]);
+
+    require.ready(function () {
+      dependenciesLoaded = true;
+      loadDelayedCreators();
+    });
+  }
+
+  function loadDelayedCreators() {
+    var key, creator;
+
+    for (key in delayedCreators) {
+      if (delayedCreators.hasOwnProperty(key)) {
+        creator = delayedCreators[key]; 
+        createPresenter(creator.id, creator.callback);
+      }
+    }
+  }
+
   loadDependencies();
 
-  return {
-    
-  };
-})();
+  return { create: create };
+});

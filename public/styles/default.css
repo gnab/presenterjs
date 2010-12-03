@@ -10,7 +10,7 @@ body {
 }
 code {
   font-family: mono, Monaco, Consolas, "Lucida Console", "Courier New";
-  font-size: 1.1em;
+  font-size: 0.9em;
 }
 #sidebar {
   background: #fff;
@@ -24,25 +24,7 @@ code {
   font-size: 0.8em;
   position: relative;
 }
-#presenter {
-  background: #aaa;
-  height: 100%;
-  position: absolute;
-}
-#shadow {
-  border: 1px solid transparent;
-  position: absolute;
-}
-#slide {
-  background: #fff;
-  border: 1px solid transparent;
-  position: relative;
-  overflow: hidden;
-}
 h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
   margin-bottom: 0;
-}
-#content {
-  padding: 2em;
 }
