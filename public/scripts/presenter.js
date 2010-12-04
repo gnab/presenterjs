@@ -1,27 +1,15 @@
 define(['common'], function (common) {
 
-  var dependenciesLoaded = false, delayedCreators = [];
-
-  function create(id, callback) {
-    if (dependenciesLoaded) {
-      createPresenter(id, callback);
-    }
-    else {
-      delayedCreators.push({ id: id, callback: callback });
-    }
-  }
-
-  function createPresenter(id, callback) {
+  function createPresenter(id) {
     var presenterElement = $('#' + id), 
         slide = createSlide(presenterElement);
 
     presenterElement.css({
-      background: '#aaa',
-      height: '100%',
+      background: '#edece9',
       position: 'absolute'
     });
 
-    callback({
+    return {
       resize: function (left, top, width, height) {
         common.resizeElement(presenterElement, left, top, width, height);
         slide.resize(width, height);
@@ -32,7 +20,7 @@ define(['common'], function (common) {
         }
         return slide.content();
       }
-    });
+    };
   }
 
   function createSlide(presenterElement) {
@@ -158,10 +146,11 @@ define(['common'], function (common) {
 
     if (engine !== undefined) {
       engine = formatEngineString(engine);
-      style[engine + 'box-shadow'] = '0 0 20px #777';
+      style[engine + 'box-shadow'] = '0 0 15px #ccc';
     }
   
-    style['border'] = '1px solid transparent';
+    style['border'] = '1px solid #c6c4c3';
+    style['background'] = '#fff';
     style['position'] = 'absolute';
 
     shadow.css(style);
@@ -186,9 +175,9 @@ define(['common'], function (common) {
     common.resizeElement(element, dimensions.left, dimensions.top,
       dimensions.width, dimensions.height);
 
-    common.resizeElement(shadow, dimensions.left, dimensions.top,
-      dimensions.width * dimensions.scale,
-      dimensions.height * dimensions.scale);
+    common.resizeElement(shadow, dimensions.left - 1, dimensions.top - 1,
+      Math.ceil(dimensions.width * dimensions.scale) + 2,
+      Math.ceil(dimensions.height * dimensions.scale) + 2);
 
     scaleSlide(dimensions.scale);
   }
@@ -207,15 +196,17 @@ define(['common'], function (common) {
 
     zoomFactor = slideHeight / 6;
 
-    gutterSize = gutterSize * zoomFactor / 100;
+    gutterSize = Math.max(gutterSize, gutterSize * zoomFactor / 100);
 
     slideWidth -= gutterSize * 2;
     slideHeight -= gutterSize * 2;
 
+    zoomFactor = slideHeight / 6;
+
     slideLeft = (containerWidth - slideWidth) / 2;
     slideTop = (containerHeight - slideHeight) / 2;
-    slideWidth = slideWidth * 100 / zoomFactor;
-    slideHeight = slideHeight * 100 / zoomFactor;
+    slideWidth = Math.floor(slideWidth * 100 / zoomFactor);
+    slideHeight = Math.floor(slideHeight * 100 / zoomFactor);
 
     return {
       left: slideLeft,
@@ -226,32 +217,7 @@ define(['common'], function (common) {
     }
   }
 
-  function loadDependencies() {
-    require([
-      'vendor/jquery-1.4.4.min', 
-      'vendor/showdown',
-      'vendor/html-sanitizer-minified',
-      'vendor/highlight.min'
-    ]);
-
-    require.ready(function () {
-      dependenciesLoaded = true;
-      loadDelayedCreators();
-    });
-  }
-
-  function loadDelayedCreators() {
-    var key, creator;
-
-    for (key in delayedCreators) {
-      if (delayedCreators.hasOwnProperty(key)) {
-        creator = delayedCreators[key]; 
-        createPresenter(creator.id, creator.callback);
-      }
-    }
-  }
-
-  loadDependencies();
-
-  return { create: create };
+  return { 
+    create: createPresenter
+  };
 });

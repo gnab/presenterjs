@@ -3,13 +3,30 @@
   <head>
     <link rel="stylesheet" href="styles/default.css" type="text/css" />
     <link rel="stylesheet" href="styles/vendor/highlight.min.css" type="text/css" />
-    <script type="text/javascript" src="lib/vendor/require.js"></script>
+    <script type="text/javascript" src="scripts/vendor/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="scripts/vendor/sammy-0.6.2.min.js"></script>
+    <script type="text/javascript" src="scripts/vendor/showdown.js"></script>
+    <script type="text/javascript" src="scripts/vendor/html-sanitizer-minified.js"></script>
+    <script type="text/javascript" src="scripts/vendor/html-sanitizer-minified.js"></script>
+    <script type="text/javascript" src="scripts/vendor/highlight.min.js"></script>
+    <script type="text/javascript" src="scripts/vendor/require.js"></script>
     <script type="text/javascript">
-      require({baseUrl: 'lib'}, ['main']);
+      require({baseUrl: 'scripts'}, ['main']);
     </script>
   </head>
   <body>
-    <div id="editor"></div>
+    <div id="panel">
+      <div id="header">
+        PresenterJS BETA
+        <br /><br />
+        <ul id="tabs"></ul>
+        <div style="clear: both"></div>
+      </div>
+      <div id="list">TODO: Implement slide listing</div>
+      <div id="editor">
+        <textarea></textarea>
+      </div>
+    </div>
     <div id="presenter"></div>
   </body>
 </html>
