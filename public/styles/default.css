@@ -8,21 +8,9 @@ body {
   font-family: Georgia;
   font-size: 100%;
 }
-code {
+code, textarea {
   font-family: mono, Monaco, Consolas, "Lucida Console", "Courier New";
   font-size: 0.9em;
-}
-#sidebar {
-  background: #fff;
-  border-right: 4px solid #ccc;
-  height: 100%;
-  position: absolute;
-}
-#editor {
-  border: 0;
-  font-family: mono, Monaco, Consolas, "Lucida Console", "Courier New";
-  font-size: 0.8em;
-  position: relative;
 }
 h1, h2, h3, h4, h5, h6 {
   margin-top: 0;

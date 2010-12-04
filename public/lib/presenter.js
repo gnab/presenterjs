@@ -7,15 +7,15 @@ define(function () {
       createPresenter(id, callback);
     }
     else {
-      delayedCreators.push({id: id, callback: callback});
+      delayedCreators.push({ id: id, callback: callback });
     }
   }
 
   function createPresenter(id, callback) {
-    var element = $('#' + id), 
-        slide = createSlide(presenter, element);
+    var presenterElement = $('#' + id), 
+        slide = createSlide(presenterElement);
 
-    element.css({
+    presenterElement.css({
       background: '#aaa',
       height: '100%',
       position: 'absolute'
@@ -23,7 +23,7 @@ define(function () {
 
     callback({
       resize: function (left, top, width, height) {
-        resizeElement(element, left, top, width, height);
+        resizeElement(presenterElement, left, top, width, height);
         slide.resize(width, height);
       },
       content: function (content) {
@@ -35,16 +35,16 @@ define(function () {
     });
   }
 
-  function createSlide(presenter, presenterContainer) {
+  function createSlide(presenterElement) {
     var slideElement = $('<div />'),
         contentElement = $('<div />'),
         shadowElement = $('<div />'),
         scaleSlide = createScaler(slideElement),
-        convertContent = createContentConverter(contentElement),
+        setContent = createContentAssigner(contentElement),
         content = '';
 
     styleShadow(shadowElement);
-    presenterContainer.append(shadowElement);
+    presenterElement.append(shadowElement);
 
     slideElement.css({
       background: '#fff',
@@ -53,12 +53,10 @@ define(function () {
       overflow: 'hidden'
     });
 
-    contentElement.css({
-      padding: '2em'
-    });
+    contentElement.css({ padding: '2em' });
 
     slideElement.append(contentElement);
-    presenterContainer.append(slideElement);
+    presenterElement.append(slideElement);
 
     return {
       resize: function (width, height) {
@@ -67,7 +65,7 @@ define(function () {
       content: function (content) {
         if (content !== undefined) {
           slideContent = content;
-          convertContent(content);
+          setContent(content);
         }
         return slideContent;
       }
@@ -116,7 +114,7 @@ define(function () {
     return scaler;
   }
 
-  function createContentConverter(contentElement) {
+  function createContentAssigner(contentElement) {
     var converter = new Showdown.converter();
 
     return function (content) {
@@ -196,15 +194,13 @@ define(function () {
   }
 
   function calculateSlideDimensions(containerWidth, containerHeight) {
-    var slideWidth, slideHeight, slideLeft, slideTop, 
-        widthFactor = 4, heightFactor = 3,
-        gutterSize = 20, zoomFactor;
+    var slideWidth, slideHeight, slideLeft, slideTop, zoomFactor
+        widthFactor = 4, heightFactor = 3, gutterSize = 20;
 
     if (containerWidth / widthFactor > containerHeight / heightFactor) {
       slideHeight = containerHeight;
       slideWidth = slideHeight / heightFactor * widthFactor;
-    } 
-    else {
+    } else {
       slideWidth = containerWidth;
       slideHeight = slideWidth / widthFactor * heightFactor;
     }
@@ -218,9 +214,8 @@ define(function () {
 
     slideLeft = (containerWidth - slideWidth) / 2;
     slideTop = (containerHeight - slideHeight) / 2;
-
-    slideHeight = slideHeight * 100 / zoomFactor;
     slideWidth = slideWidth * 100 / zoomFactor;
+    slideHeight = slideHeight * 100 / zoomFactor;
 
     return {
       left: slideLeft,

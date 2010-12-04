@@ -1,84 +1,42 @@
-define(function () {
+define(['editor', 'presenter'], function (editor, presenter) {
 
-  var container, sidebar, editor, presenter;
+  var container;
 
   function loadDependencies() {
-    require([
-      'presenter',
-      'vendor/jquery-1.4.4.min'],
-      function (presenterFactory) {
-        presenterFactory.create('presenter', function (instance) {
-          presenter = instance;
-          updateLayout(); 
-        });
-      }
-    );
-
-    require.ready(function () {
-      loadEnvironment();
+    editor.create('editor', function (editor) {
+      presenter.create('presenter', function (presenter) {
+        container = $(window);
+        loadEnvironment(editor, presenter);
+      });
     });
   }
 
-  function loadEnvironment() {
-    bindToElements();
-
-    loadLayout();
-    loadEditor();
+  function loadEnvironment(editor, presenter) {
+    loadLayout(editor, presenter);
+    loadEditor(editor, presenter);
   }
 
-  function bindToElements() {
-    container = $(window);
+  function loadLayout(editor, presenter) {
+    var updateLayout = function () {
+      var editorWidth = Math.floor(container.width() * 0.33);
 
-    sidebar = $('#sidebar');
-    editor = $('#editor');
-  }
+      editor.resize(0, 0, editorWidth, container.height());
 
-  function loadLayout() {
+      presenter.resize(
+        editor.width(), 0, container.width() - editor.width(),
+        container.height()
+      );
+    }
     container.resize(updateLayout);
+    updateLayout();
   }
 
-  function updateLayout() {
-    resizeSidebar();
-
-    presenter.resize(
-      sidebar.outerWidth(), 
-      0, 
-      container.width() - sidebar.outerWidth(),
-      container.height()
-    );
-  }
-
-  function resizeSidebar() {
-    var width = Math.floor(container.width() * 0.33);
-
-    sidebar.css({
-      width: width + 'px'
-    });
-
-    resizeEditor(width, container.height());
-  }
-
-  function resizeEditor(width, height) {
-    var margin = 10;
-
-    width -= margin * 2;
-    height -= margin * 2;
-
-    editor.css({
-      width: width + 'px',
-      height: height + 'px',
-      left: margin + 'px',
-      top: margin + 'px'
-    });
-  }
-
-  function loadEditor() {
+  function loadEditor(editor, presenter) {
     var setSlideContent = function () {
-      presenter.content(editor.val());
+      presenter.content(editor.content());
     };
 
-    editor.bind("keyup", setSlideContent);
-    editor.bind("paste", setSlideContent);
+    $(editor).bind('input', setSlideContent);
   }
 
   loadDependencies();
