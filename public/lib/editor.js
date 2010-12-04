@@ -1,4 +1,4 @@
-define(function () {
+define(['common'], function (common) {
 
   var dependenciesLoaded = false, delayedCreators = [];
 
@@ -33,8 +33,8 @@ define(function () {
 
     editor = {
       resize: function (left, top, width, height) {
-        resizeElement(containerElement, left, top, width, height);
-        resizeElement(editorElement, left + margin, top + margin,
+        common.resizeElement(containerElement, left, top, width, height);
+        common.resizeElement(editorElement, left + margin, top + margin,
           width - margin * 2, height - margin * 2);
       },
       content: function (content) {
@@ -56,15 +56,6 @@ define(function () {
     editorElement.bind("paste", editorInputNotifier);
 
     callback(editor);
-  }
-
-  function resizeElement(element, left, top, width, height) {
-    element.css({
-      left: left + 'px',
-      top: top + 'px',
-      width: width + 'px',
-      height: height + 'px',
-    });
   }
 
   function loadDependencies() {

@@ -1,4 +1,4 @@
-define(function () {
+define(['common'], function (common) {
 
   var dependenciesLoaded = false, delayedCreators = [];
 
@@ -23,7 +23,7 @@ define(function () {
 
     callback({
       resize: function (left, top, width, height) {
-        resizeElement(presenterElement, left, top, width, height);
+        common.resizeElement(presenterElement, left, top, width, height);
         slide.resize(width, height);
       },
       content: function (content) {
@@ -183,10 +183,10 @@ define(function () {
   function resizeSlide(element, shadow, width, height, scaleSlide) {
     var dimensions = calculateSlideDimensions(width, height); 
 
-    resizeElement(element, dimensions.left, dimensions.top,
+    common.resizeElement(element, dimensions.left, dimensions.top,
       dimensions.width, dimensions.height);
 
-    resizeElement(shadow, dimensions.left, dimensions.top,
+    common.resizeElement(shadow, dimensions.left, dimensions.top,
       dimensions.width * dimensions.scale,
       dimensions.height * dimensions.scale);
 
@@ -224,15 +224,6 @@ define(function () {
       height: slideHeight,
       scale: zoomFactor / 100,
     }
-  }
-
-  function resizeElement(element, left, top, width, height) {
-    element.css({
-      left: left + 'px',
-      top: top + 'px',
-      width: width + 'px',
-      height: height + 'px',
-    });
   }
 
   function loadDependencies() {
