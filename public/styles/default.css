@@ -63,6 +63,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 #list {
   background: #fff;
+  overflow-x: hidden;
 }
 #editor {
   background: #fff;
@@ -70,4 +71,44 @@ h1, h2, h3, h4, h5, h6 {
 }
 #editor textarea {
   position: relative;
+}
+.presenter {
+  background: #edece9;
+  overflow: hidden;
+  position: relative;
+}
+.frame {
+  border: 1px solid #c6c4c3;
+  background: #fff;
+  position: absolute;
+  -webkit-box-shadow: 0 0 15px #ccc;
+  -moz-box-shadow: 0 0 15px #ccc;
+  box-shadow: 0 0 15px #ccc;
+}
+.slide {
+  background: #fff;
+  border: 1px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+#list .presenter {
+  background: #fff;
+}
+#list a:hover .presenter {
+  background: #e5f2ed;
+}
+#list .active {
+  background: #f5f5f5;
+}
+#list .frame {
+  border: 1px solid #d6d4d3;
+  -webkit-box-shadow: 0 0 15px #eee;
+  -moz-box-shadow: 0 0 15px #eee;
+  box-shadow: 0 0 15px #eee;
+}
+#list .active .frame {
+  border: 1px solid #d6d4d3;
+  -webkit-box-shadow: 0 0 15px #ddd;
+  -moz-box-shadow: 0 0 15px #ddd;
+  box-shadow: 0 0 15px #ddd;
 }

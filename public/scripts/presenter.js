@@ -1,13 +1,9 @@
 define(['common'], function (common) {
 
-  function createPresenter(id) {
-    var presenterElement = $('#' + id), 
-        slide = createSlide(presenterElement);
+  function createPresenter(presenterElement, shadowColor) {
+    var slide = createSlide(presenterElement, shadowColor);
 
-    presenterElement.css({
-      background: '#edece9',
-      position: 'absolute'
-    });
+    presenterElement.addClass('presenter');
 
     return {
       resize: function (left, top, width, height) {
@@ -19,27 +15,26 @@ define(['common'], function (common) {
           slide.content(content);
         }
         return slide.content();
+      },
+      height: function () {
+        return presenterElement.outerHeight();
       }
     };
   }
 
-  function createSlide(presenterElement) {
+  function createSlide(presenterElement, shadowColor) {
     var slideElement = $('<div />'),
         contentElement = $('<div />'),
-        shadowElement = $('<div />'),
+        frameElement = $('<div />'),
         scaleSlide = createScaler(slideElement),
         setContent = createContentAssigner(contentElement),
         content = '';
 
-    styleShadow(shadowElement);
-    presenterElement.append(shadowElement);
+    slideElement.addClass('slide');
 
-    slideElement.css({
-      background: '#fff',
-      border: '1px solid transparent',
-      position: 'relative',
-      overflow: 'hidden'
-    });
+    frameElement.addClass('frame');
+    presenterElement.append(frameElement);
+
 
     contentElement.css({ padding: '2em' });
 
@@ -48,7 +43,7 @@ define(['common'], function (common) {
 
     return {
       resize: function (width, height) {
-        resizeSlide(slideElement, shadowElement, width, height, scaleSlide);
+        resizeSlide(slideElement, frameElement, width, height, scaleSlide);
       },
       content: function (content) {
         if (content !== undefined) {
@@ -63,25 +58,38 @@ define(['common'], function (common) {
   function createScaler(element) {
     var scaler;
 
-    if (propertySupported('WebkitTransform')) {
+    if (propertySupported(element, 'WebkitTransform')) {
       scaler = createScalerForEngine(element, 'webkit');
     }
-    else if (propertySupported('MozTransform')) {
+    else if (propertySupported(element, 'MozTransform')) {
       scaler = createScalerForEngine(element, 'moz');
     }
-    else if (propertySupported('OTransform')) {
+    else if (propertySupported(element, 'OTransform')) {
       scaler = createScalerForEngine(element, 'o');
     }
-    else if (propertySupported('transform')) {
+    else if (propertySupported(element, 'transform')) {
       scaler = createScalerForEngine(element);
     }
-    else if (propertySupported('zoom')) {
+    else if (propertySupported(element, 'zoom')) {
       scaler = function (scale) {
         element.css({'zoom': scale});
       }
     }
 
     return scaler;
+  }
+
+  function propertySupported(element, property) {
+    return element[0].style[property] !== undefined;
+  }
+
+  function formatEngineString(engine) {
+    if (engine !== undefined) {
+      return '-' + engine + '-';
+    }
+    else {
+      return '';
+    }
   }
 
   function createScalerForEngine(element, engine) {
@@ -129,44 +137,6 @@ define(['common'], function (common) {
 
   function filterNameIdClass(id) { 
     return id; 
-  }
-
-  function styleShadow(shadow) {
-    var style = {}, engine;
-
-    if (propertySupported('WebkitBoxShadow')) {
-      engine = 'webkit';
-    }
-    else if (propertySupported('MozBoxShadow')) {
-      engine = 'moz'
-    }
-    else if (propertySupported('BoxShadow')) {
-      engine = '';
-    }
-
-    if (engine !== undefined) {
-      engine = formatEngineString(engine);
-      style[engine + 'box-shadow'] = '0 0 15px #ccc';
-    }
-  
-    style['border'] = '1px solid #c6c4c3';
-    style['background'] = '#fff';
-    style['position'] = 'absolute';
-
-    shadow.css(style);
-  }
-
-  function propertySupported(property) {
-    return document.body.style[property] !== undefined;
-  }
-
-  function formatEngineString(engine) {
-    if (engine !== undefined) {
-      return '-' + engine + '-';
-    }
-    else {
-      return '';
-    }
   }
 
   function resizeSlide(element, shadow, width, height, scaleSlide) {

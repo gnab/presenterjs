@@ -20,8 +20,8 @@ define(['common'], function (common) {
       width: function () {
         return containerElement.outerWidth();
       },
-      hide: function () { 
-        containerElement.hide();
+      hide: function() {
+        containerElement.hide(); 
       },
       show: function () {
         containerElement.show();

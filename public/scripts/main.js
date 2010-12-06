@@ -6,10 +6,29 @@ define(['common', 'panel', 'list', 'editor', 'presenter'],
   function loadEnvironment() {
     container = $(window);
 
-    presenter = presenterFactory.create('presenter');
+    presenter = presenterFactory.create($('#presenter'));
 
     panel.add('list', 'List slides', list);
     panel.add('edit', 'Edit slide', editor);
+
+    list.add({content: 'empty slide'});
+    list.add({content: 'empty slide'});
+    list.add({content: 'empty slide'});
+    list.add({content: 'empty slide'});
+    list.add({content: 'empty slide'});
+
+    $(document).keydown(function (e) {
+      if (panel.tab() !== 'list') {
+        return;
+      }
+
+      if (e.keyCode === 38) {
+        list.movePrevious();
+      }
+      else if (e.keyCode === 40) {
+        list.moveNext();
+      }
+    });
 
     loadLayout();
     loadEditor();
@@ -46,8 +65,16 @@ define(['common', 'panel', 'list', 'editor', 'presenter'],
       this.get('#/list', function () {
         panel.tab('list');
       });
+      this.get('#/show/:slide', function () {
+        panel.tab('list');
+        list.slide(this.params['slide']);
+      });
       this.get('#/edit', function () {
         panel.tab('edit');
+      });
+      this.get('#/edit/:slide', function () {
+        panel.tab('edit');
+        list.slide(this.params['slide']);
       });
     });
 
