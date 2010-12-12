@@ -1,61 +1,64 @@
-define(['common'], function (common) {
+define(['element'], function (Element) {
 
-  function wrapPanel() {
-    var panelElement = $('#panel'),
-        headerElement = panelElement.children('#header'),
-        tabsElement = panelElement.find('ul'),
-        tabs = {},
-        currentTab;
+  Panel.inherit(Element);
 
-    panel = {
-      resize: function (left, top, width, height) {
-        common.resizeElement(panelElement, left, top, width, height);
-        resizeTabbedElements(tabs, width, 
-          height - headerElement.outerHeight());
-      },
-      width: function () {
-        return panelElement.outerWidth();
-      },
-      add: function (id, title, element) {
-        var tab = $('<li></li>'),
-            tabContent = $('<a href="#/' + id + '">' + title + '</a>');
-
-        tab.append(tabContent);
-        tabsElement.append(tab);
-
-        tabs[id] = {id: id, title: title, header: tabContent, 
-          content: element};
-        element.hide();
-      },
-      tab: function (id) {
-        if (id) {
-          var switchToTab = tabs[id];
-          if (switchToTab) {
-            if (currentTab) {
-              currentTab.header.removeClass('active');
-              currentTab.content.hide();
-            }
-            currentTab = switchToTab;
-            currentTab.header.addClass('active');
-            currentTab.content.show();
-          }
-        }
-        return currentTab && currentTab.id;
-      }
-    };
-
-    return panel;
+  function Panel(id) {
+    this._element = $('#' + id);
+    this._headerElement = this._element.children('.header');
+    this._tabsElement = this._element.find('ul');
+    this._tabs = [];
   }
 
-  function resizeTabbedElements(tabs, width, height) {
-    var key, element;
+  Panel.prototype.resize = function (left, top, width, height) {
+    var key, tabHeight = height - this._headerElement.outerHeight();
 
-    for (key in tabs) {
-      if (tabs.hasOwnProperty(key)) {
-        tabs[key].content.resize(undefined, undefined, width, height); 
+    this.resizeElement(left, top, width, height);
+
+    for (key in this._tabs) {
+      if (this._tabs.hasOwnProperty(key)) {
+        this._tabs[key].content.resize(undefined, undefined, width, 
+          tabHeight); 
       }
     }
+  };
+
+  Panel.prototype.width = function () {
+    return this._element.outerWidth();
+  };
+
+  Panel.prototype.addTab = function (id, title, element) {
+    var tab = $('<li></li>'),
+        tabContent = $('<a href="#/' + id + '">' + title + '</a>');
+
+    tab.append(tabContent);
+    this._tabsElement.append(tab);
+
+    this._tabs[id] = { 
+      id: id, 
+      title: title, 
+      header: tabContent, 
+      content: element
+    };
+
+    element.hide();
+  };
+
+  Panel.prototype.tab = function (id) {
+    if (id) {
+      var switchToTab = this._tabs[id];
+      if (switchToTab) {
+        if (this._currentTab) {
+          this._currentTab.header.removeClass('active');
+          this._currentTab.content.hide();
+        }
+        this._currentTab = switchToTab;
+        this._currentTab.header.addClass('active');
+        this._currentTab.content.show();
+      }
+    }
+    return this._currentTab && this._currentTab.id;
   }
 
-  return wrapPanel();
+  return Panel;
+
 });

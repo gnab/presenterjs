@@ -1,46 +1,36 @@
-define(['common'], function (common) {
+define(['element'], function (Element) {
 
-  function wrapEditor() {
-    var containerElement = $('#editor'),
-        textElement = containerElement.children('textarea'),
-        margin = 20;
+  Editor.inherit(Element);
 
-    editor = {
-      resize: function (left, top, width, height) {
-        common.resizeElement(containerElement, left, top, width, height);
-        common.resizeElement(textElement, margin, margin,
-          width - margin * 2 - 4, height - margin * 2 - 4);
-      },
-      content: function (content) {
-        if (content !== undefined) {
-          textElement.val(content);
-        }
-        return textElement.val();
-      },
-      width: function () {
-        return containerElement.outerWidth();
-      },
-      hide: function() {
-        containerElement.hide(); 
-      },
-      show: function () {
-        containerElement.show();
-      }
+  function Editor(id) {
+    var self, onInput;
+
+    Element.call(this, '#' + id);
+    this._textElement = new Element(this.children('textarea'));
+    this._margin = 20;
+
+    self = this;
+    onInput = function () {
+      self.trigger('input');
     };
 
-    createInputNotifier(editor, textElement);
-
-    return editor;
+    this._textElement.bind("keyup", onInput);
+    this._textElement.bind("paste", onInput);
   }
 
-  function createInputNotifier(editor, textElement) {
-    inputNotifier = function () {
-      $(editor).trigger('input');
-    };
+  Editor.prototype.resize = function (left, top, width, height) {
+    this.resizeElement(left, top, width, height);
+    this._textElement.resizeElement(this._margin, this._margin,
+      width - this._margin * 2 - 4, height - this._margin * 2 - 4);
+  };
 
-    textElement.bind("keyup", inputNotifier);
-    textElement.bind("paste", inputNotifier);
-  }
+  Editor.prototype.content = function (content) {
+    if (content !== undefined) {
+      this._textElement.val(content);
+    }
+    return this._textElement.val();
+  };
 
-  return wrapEditor();
+  return Editor;
+
 });

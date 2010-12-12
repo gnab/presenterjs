@@ -11,18 +11,30 @@
     <script type="text/javascript" src="scripts/vendor/highlight.min.js"></script>
     <script type="text/javascript" src="scripts/vendor/require.js"></script>
     <script type="text/javascript">
+      (function () {
+        var Subclass = function () {};
+
+        Function.prototype.inherit = function (parent) {
+          Subclass.prototype = parent.prototype;
+          this.prototype = new Subclass();
+        };
+      })();
       require({baseUrl: 'scripts'}, ['main']);
     </script>
   </head>
   <body>
     <div id="panel">
-      <div id="header">
+      <div class="header">
         PresenterJS BETA
         <br /><br />
         <ul id="tabs"></ul>
         <div style="clear: both"></div>
       </div>
-      <div id="list"></div>
+      <div id="list">
+        <div class="toolbar">
+          <a href="#/add" id="addSlide">Add slide</a>
+        </div>
+      </div>
       <div id="editor">
         <textarea></textarea>
       </div>

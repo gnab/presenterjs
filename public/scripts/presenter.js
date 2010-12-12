@@ -1,28 +1,28 @@
-define(['common'], function (common) {
+define(['element', 'common'], function (Element, common) {
 
-  function createPresenter(presenterElement, shadowColor) {
-    var slide = createSlide(presenterElement, shadowColor);
+  Presenter.inherit(Element);
 
-    presenterElement.addClass('presenter');
+  function Presenter(element) {
+    Element.call(this, element);
 
-    return {
-      resize: function (left, top, width, height) {
-        common.resizeElement(presenterElement, left, top, width, height);
-        slide.resize(width, height);
-      },
-      content: function (content) {
-        if (content !== undefined) {
-          slide.content(content);
-        }
-        return slide.content();
-      },
-      height: function () {
-        return presenterElement.outerHeight();
-      }
-    };
+    this._slide = createSlide(this._element);
+
+    this.addClass('presenter');
   }
 
-  function createSlide(presenterElement, shadowColor) {
+  Presenter.prototype.resize = function (left, top, width, height) {
+    this.resizeElement(left, top, width, height);
+    this._slide.resize(width, height);
+  };
+
+  Presenter.prototype.content = function (content) {
+    if (content !== undefined) {
+      this._slide.content(content);
+    }
+    return this._slide.content();
+  };
+
+  function createSlide(presenterElement) {
     var slideElement = $('<div />'),
         contentElement = $('<div />'),
         frameElement = $('<div />'),
@@ -34,7 +34,6 @@ define(['common'], function (common) {
 
     frameElement.addClass('frame');
     presenterElement.append(frameElement);
-
 
     contentElement.css({ padding: '2em' });
 
@@ -187,7 +186,6 @@ define(['common'], function (common) {
     }
   }
 
-  return { 
-    create: createPresenter
-  };
+  return Presenter;
+
 });

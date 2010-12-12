@@ -21,7 +21,7 @@ h1, h2, h3, h4, h5, h6 {
   border-right: 1px solid #c6c4c3;
   position: absolute;
 }
-#panel #header {
+#panel .header {
   border-bottom: 1px solid #eee;
 } 
 #panel ul {
@@ -60,6 +60,12 @@ h1, h2, h3, h4, h5, h6 {
   border-color: #eee;
   color: #000;
   font-weight: bold;
+}
+#panel .toolbar {
+  background: #fff;
+  font-family: 'Helvetica Neue', Arial, Helvetica, 'Liberation Sans', FreeSans, sans-serif;
+  font-size: 0.8em;
+  padding: 1em;
 }
 #list {
   background: #fff;

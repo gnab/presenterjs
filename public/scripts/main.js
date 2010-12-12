@@ -1,21 +1,28 @@
-define(['common', 'panel', 'list', 'editor', 'presenter'], 
-  function (common, panel, list, editor, presenterFactory) {
+define(['panel', 'list', 'editor', 'presenter', 'presentation'], 
+  function (Panel, List, Editor, Presenter, Presentation) {
 
-  var container, presenter;
+  var container, panel, list, presenter, presentation;
 
   function loadEnvironment() {
     container = $(window);
 
-    presenter = presenterFactory.create($('#presenter'));
+    presentation = new Presentation();
 
-    panel.add('list', 'List slides', list);
-    panel.add('edit', 'Edit slide', editor);
+    presenter = new Presenter('#presenter');
 
-    list.add({content: 'empty slide'});
-    list.add({content: 'empty slide'});
-    list.add({content: 'empty slide'});
-    list.add({content: 'empty slide'});
-    list.add({content: 'empty slide'});
+    loadPanel(presentation);
+    loadLayout();
+    loadRoutes();
+  }
+
+  function loadPanel(presentation) {
+    var editor = new Editor('editor');
+
+    list = new List('list', presentation),
+        
+    panel = new Panel('panel');
+    panel.addTab('list', 'List slides', list);
+    panel.addTab('edit', 'Edit slide', editor);
 
     $(document).keydown(function (e) {
       if (panel.tab() !== 'list') {
@@ -30,9 +37,11 @@ define(['common', 'panel', 'list', 'editor', 'presenter'],
       }
     });
 
-    loadLayout();
-    loadEditor();
-    loadRoutes();
+    var setSlideContent = function () {
+      presenter.content(editor.content());
+    };
+
+    editor.bind('input', setSlideContent);
   }
 
   function loadLayout() {
@@ -49,14 +58,6 @@ define(['common', 'panel', 'list', 'editor', 'presenter'],
     updateLayout();
   }
 
-  function loadEditor() {
-    var setSlideContent = function () {
-      presenter.content(editor.content());
-    };
-
-    $(editor).bind('input', setSlideContent);
-  }
-
   function loadRoutes() {
     var app = $.sammy(function () {
       this.get('', function () {
@@ -65,16 +66,12 @@ define(['common', 'panel', 'list', 'editor', 'presenter'],
       this.get('#/list', function () {
         panel.tab('list');
       });
-      this.get('#/show/:slide', function () {
-        panel.tab('list');
-        list.slide(this.params['slide']);
-      });
       this.get('#/edit', function () {
         panel.tab('edit');
       });
-      this.get('#/edit/:slide', function () {
-        panel.tab('edit');
-        list.slide(this.params['slide']);
+      this.get('#/add', function () {
+        presentation.addSlide('');
+        this.redirect('#/list');
       });
     });
 
@@ -84,4 +81,5 @@ define(['common', 'panel', 'list', 'editor', 'presenter'],
   }
 
   loadEnvironment();
+
 });
