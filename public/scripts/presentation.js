@@ -4,6 +4,7 @@ define(['model', 'slide'], function (Model, Slide) {
 
   function Presentation(title) {
     this.title(title);
+    this._currentSlide = undefined;
     this._slides = [];
   }
 
@@ -15,8 +16,15 @@ define(['model', 'slide'], function (Model, Slide) {
     this.trigger('addSlide', slide);
   };
 
-  Presentation.prototype.getSlideCount = function () {
-    return this._slides.length;
+  Presentation.prototype.gotoSlide = function (slide) {
+    if (slide) {
+      this._currentSlide = slide;
+      this.trigger('gotoSlide', slide);
+    }
+  };
+
+  Presentation.prototype.getCurrentSlide = function () {
+    return this._currentSlide;
   };
 
   return Presentation;

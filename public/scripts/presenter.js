@@ -28,7 +28,7 @@ define(['element', 'common'], function (Element, common) {
         frameElement = $('<div />'),
         scaleSlide = createScaler(slideElement),
         setContent = createContentAssigner(contentElement),
-        content = '';
+        slideContent = '';
 
     slideElement.addClass('slide');
 

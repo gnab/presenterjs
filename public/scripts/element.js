@@ -8,6 +8,9 @@ define(function () {
     bind: function (event, handler) {
       this._element.bind(event, handler);
     },
+    trigger: function (event, arg) {
+      this._element.trigger(event, arg);
+    },
     append: function (element) {
       this._element.append(element._element || element);
     },

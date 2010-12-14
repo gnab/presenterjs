@@ -100,7 +100,7 @@ h1, h2, h3, h4, h5, h6 {
 #list .presenter {
   background: #fff;
 }
-#list a:hover .presenter {
+#list .presenter:hover {
   background: #e5f2ed;
 }
 #list .active {

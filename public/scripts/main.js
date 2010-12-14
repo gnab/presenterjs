@@ -6,13 +6,20 @@ define(['panel', 'list', 'editor', 'presenter', 'presentation'],
   function loadEnvironment() {
     container = $(window);
 
-    presentation = new Presentation();
-
     presenter = new Presenter('#presenter');
 
+    loadPresentation();
     loadPanel(presentation);
     loadLayout();
     loadRoutes();
+  }
+
+  function loadPresentation() {
+    presentation = new Presentation();
+
+    presentation.bind('gotoSlide', function (e, slide) {
+      presenter.content(slide.content());
+    });
   }
 
   function loadPanel(presentation) {
@@ -38,7 +45,12 @@ define(['panel', 'list', 'editor', 'presenter', 'presentation'],
     });
 
     var setSlideContent = function () {
-      presenter.content(editor.content());
+      //presenter.content(editor.content());
+      var slide = presentation.getCurrentSlide();
+      console.log(slide);
+      if (slide) {
+        slide.content(editor.content());
+      }
     };
 
     editor.bind('input', setSlideContent);
@@ -70,7 +82,7 @@ define(['panel', 'list', 'editor', 'presenter', 'presentation'],
         panel.tab('edit');
       });
       this.get('#/add', function () {
-        presentation.addSlide('');
+        presentation.addSlide('empty slide');
         this.redirect('#/list');
       });
     });
