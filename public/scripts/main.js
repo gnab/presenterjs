@@ -15,10 +15,21 @@ define(['panel', 'list', 'editor', 'presenter', 'presentation'],
   }
 
   function loadPresentation() {
+    var lastSlide, setContent;
+
     presentation = new Presentation();
 
+    setContent = function (e, content) {
+      presenter.content(content);
+    };
+
     presentation.bind('gotoSlide', function (e, slide) {
-      presenter.content(slide.content());
+      if (lastSlide) {
+        lastSlide.unbind('content', setContent);
+      }
+      setContent(undefined, slide.content());
+      slide.bind('content', setContent);
+      lastslide = slide;
     });
   }
 
@@ -45,9 +56,7 @@ define(['panel', 'list', 'editor', 'presenter', 'presentation'],
     });
 
     var setSlideContent = function () {
-      //presenter.content(editor.content());
       var slide = presentation.getCurrentSlide();
-      console.log(slide);
       if (slide) {
         slide.content(editor.content());
       }

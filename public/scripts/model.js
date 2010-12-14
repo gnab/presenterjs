@@ -18,6 +18,9 @@ define(function () {
     bind: function(event, handler) {
       $(this).bind(event, handler);
     },
+    unbind: function(event, handler) {
+      $(this).unbind(event, handler);
+    },
     trigger: function (event, args) {
       $(this).trigger(event, args);
     }
