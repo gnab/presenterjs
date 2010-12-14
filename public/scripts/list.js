@@ -12,6 +12,10 @@ define(['element', 'presenter'], function (Element, Presenter) {
     presentation.bind('addSlide', function (e, slide) {
       self.add(slide);
     });
+
+    presentation.bind('gotoSlide', function (e, slide) {
+      self.gotoSlide(slide);
+    });
   }
 
   List.prototype.resize = function (left, top, width, height) {
@@ -45,7 +49,7 @@ define(['element', 'presenter'], function (Element, Presenter) {
     });
   };
       
-  List.prototype.slide = function (index) {
+  List.prototype.gotoSlideByIndex = function (index) {
     var slideHeigt, slideTop, slideBottom;
 
     if (index >= 0 && index < this._entries.length) {
@@ -67,21 +71,31 @@ define(['element', 'presenter'], function (Element, Presenter) {
     }
   };
 
+  List.prototype.gotoSlide = function (slide) {
+    var i;
+
+    for (i = 0; i < this._entries.length; i++) {
+      if (this._entries[i].slide === slide) {
+        this.gotoSlideByIndex(i);
+      }
+    }
+  };
+
   List.prototype.movePrevious = function () {
     if (!this._currentSlide && this._entries.length > 0) {
-      this.slide(0);
+      this.gotoSlideByIndex(0);
     }
     else if (this._currentSlideIndex > 0) {
-      this.slide(this._currentSlideIndex - 1);
+      this.gotoSlideByIndex(this._currentSlideIndex - 1);
     } 
   };
      
   List.prototype.moveNext = function () {
     if (!this._currentSlide && this._entries.length > 0) {
-      this.slide(0);
+      this.gotoSlideByIndex(0);
     }
     else if (this._currentSlideIndex < this._entries.length - 1) {
-      this.slide(this._currentSlideIndex + 1);
+      this.gotoSlideByIndex(this._currentSlideIndex + 1);
     } 
   };
 

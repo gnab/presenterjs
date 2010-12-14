@@ -15,7 +15,7 @@ define(['panel', 'list', 'editor', 'presenter', 'presentation'],
   }
 
   function loadPresentation() {
-    var lastSlide, setContent;
+    var currentSlide, setContent;
 
     presentation = new Presentation();
 
@@ -24,12 +24,12 @@ define(['panel', 'list', 'editor', 'presenter', 'presentation'],
     };
 
     presentation.bind('gotoSlide', function (e, slide) {
-      if (lastSlide) {
-        lastSlide.unbind('content', setContent);
+      if (currentSlide) {
+        currentSlide.unbind('content', setContent);
       }
       setContent(undefined, slide.content());
       slide.bind('content', setContent);
-      lastslide = slide;
+      currentSlide = slide;
     });
   }
 
