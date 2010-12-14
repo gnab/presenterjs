@@ -1,14 +1,12 @@
 define(function () {
 
-  function Model () {
-
-  }
+  function Model () {}
 
   Model.createProperty = function (key) {
     return function (value) {
       if (value !== undefined) {
         this['_' + key] = value;
-        this.trigger(key, value);
+        this.trigger(key + 'Changed', value);
       }
       return this['_' + key];
     }

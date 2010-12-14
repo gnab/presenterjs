@@ -1,68 +1,65 @@
 define(['panel', 'list', 'editor', 'presenter', 'presentation'], 
   function (Panel, List, Editor, Presenter, Presentation) {
 
-  var container, panel, list, presenter, presentation;
+  var container, panel, list, editor, presenter, presentation;
 
   function loadEnvironment() {
     container = $(window);
+    presentation = new Presentation();
 
-    presenter = new Presenter('#presenter');
-
-    loadPresentation();
-    loadPanel(presentation);
+    loadPresenter();
+    loadPanel();
     loadLayout();
+    loadKeybordEvents();
     loadRoutes();
   }
 
-  function loadPresentation() {
+  function loadPresenter() {
     var currentSlide, setContent;
 
-    presentation = new Presentation();
+    presenter = new Presenter('#presenter');
 
     setContent = function (e, content) {
       presenter.content(content);
     };
 
-    presentation.bind('gotoSlide', function (e, slide) {
+    presentation.bind('slideChanged', function (e, index, slide) {
       if (currentSlide) {
-        currentSlide.unbind('content', setContent);
+        currentSlide.unbind('contentChanged', setContent);
       }
       setContent(undefined, slide.content());
-      slide.bind('content', setContent);
+      slide.bind('contentChanged', setContent);
       currentSlide = slide;
     });
   }
 
-  function loadPanel(presentation) {
-    var editor = new Editor('editor');
+  function loadPanel() {
+    list = new List('list'),
+    editor = new Editor('editor');
 
-    list = new List('list', presentation),
-        
     panel = new Panel('panel');
     panel.addTab('list', 'List slides', list);
     panel.addTab('edit', 'Edit slide', editor);
 
-    $(document).keydown(function (e) {
-      if (panel.tab() !== 'list') {
-        return;
-      }
-
-      if (e.keyCode === 38) {
-        list.movePrevious();
-      }
-      else if (e.keyCode === 40) {
-        list.moveNext();
-      }
+    list.bind('slideChanged', function (e, slide) {
+      presentation.gotoSlide(slide);
     });
 
-    var setSlideContent = function () {
+    presentation.bind('slideAdded', function (e, slide) {
+      list.addSlide(slide);
+    });
+
+    presentation.bind('slideChanged', function (e, index, slide) {
+      list.gotoSlideByIndex(index);
+      editor.content(slide.content());
+    });
+ 
+    editor.bind('input', function () {
       var slide = presentation.getCurrentSlide();
       if (slide) {
         slide.content(editor.content());
       }
-    };
-
-    editor.bind('input', setSlideContent);
+    });
   }
 
   function loadLayout() {
@@ -77,6 +74,21 @@ define(['panel', 'list', 'editor', 'presenter', 'presentation'],
     }
     container.resize(updateLayout);
     updateLayout();
+  }
+
+  function loadKeybordEvents() {
+    $(document).keydown(function (e) {
+      if (panel.tab() !== 'list') {
+        return;
+      }
+
+      if (e.keyCode === 38) {
+        presentation.movePrevious();
+      }
+      else if (e.keyCode === 40) {
+        presentation.moveNext();
+      }
+    });
   }
 
   function loadRoutes() {
