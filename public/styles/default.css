@@ -61,14 +61,16 @@ h1, h2, h3, h4, h5, h6 {
   color: #000;
   font-weight: bold;
 }
-#panel .toolbar {
+#list {
+  background: #fff;
+}
+#list .toolbar {
   background: #fff;
   font-family: 'Helvetica Neue', Arial, Helvetica, 'Liberation Sans', FreeSans, sans-serif;
   font-size: 0.8em;
   padding: 1em;
 }
-#list {
-  background: #fff;
+#list .entries {
   overflow-x: hidden;
 }
 #editor {

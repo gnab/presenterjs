@@ -4,13 +4,13 @@ define(['element'], function (Element) {
 
   function Panel(id) {
     this._element = $('#' + id);
-    this._headerElement = this._element.children('.header');
-    this._tabsElement = this._element.find('ul');
+    this._headerElement = new Element(this.children('.header'));
+    this._tabsElement = new Element(this.find('ul'));
     this._tabs = [];
   }
 
   Panel.prototype.resize = function (left, top, width, height) {
-    var key, tabHeight = height - this._headerElement.outerHeight();
+    var key, tabHeight = height - this._headerElement.height();
 
     this.resizeElement(left, top, width, height);
 

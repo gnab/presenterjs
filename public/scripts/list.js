@@ -3,16 +3,19 @@ define(['element', 'presenter'], function (Element, Presenter) {
   List.inherit(Element);
 
   function List(id) {
-    var self = this;
-
     Element.call(this, '#' + id);
+
+    this._toolbarElement = new Element(this.children('.toolbar'));
+    this._entriesElement = new Element(this.children('.entries'));
     this._entries = [];
   }
 
   List.prototype.resize = function (left, top, width, height) {
-    var key;
+    var key, toolbarHeight = this._toolbarElement.height();
 
     this.resizeElement(left, top, width, height);
+    this._entriesElement.resizeElement(undefined, undefined,
+      width, height - toolbarHeight);
 
     for (key in this._entries) {
       if (this._entries.hasOwnProperty(key)) {
@@ -26,7 +29,7 @@ define(['element', 'presenter'], function (Element, Presenter) {
     var self = this, presenter = new Presenter('<div />');
 
     this._entries.push({ slide: slide, presenter: presenter });
-    this.append(presenter);
+    this._entriesElement.append(presenter);
 
     presenter.content(slide.content());
     presenter.resize(undefined, undefined, this.width(), 250);

@@ -14,6 +14,9 @@ define(function () {
     append: function (element) {
       this._element.append(element._element || element);
     },
+    find: function (query) {
+      return this._element.find(query);
+    },
     children: function (query) {
       return this._element.children(query);
     },
