@@ -80,25 +80,30 @@ h1, h2, h3, h4, h5, h6 {
   color: #000;
   font-weight: bold;
 }
-#list {
+.toolbar {
   background: #fff;
-}
-#list .toolbar {
-  background: #fff;
+  border-bottom: 1px solid #eee;
   font-family: 'Helvetica Neue', Arial, Helvetica, 'Liberation Sans', FreeSans, sans-serif;
   font-size: 0.8em;
   padding: 1em;
 }
-#list .toolbar a {
+.toolbar a {
   color: #777;
   text-decoration: none;
 }
-#list .toolbar a:hover {
+.toolbar a:hover {
   color: #000;
   text-decoration: underline;
 }
+#list {
+  background: #fff;
+}
 #list #addSlide {
   background: url(../images/add.png) no-repeat;
+  padding-left: 20px;
+}
+#list #removeSlide {
+  background: url(../images/delete.png) no-repeat;
   padding-left: 20px;
 }
 #list .entries {

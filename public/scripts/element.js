@@ -14,6 +14,9 @@ define(function () {
     append: function (element) {
       this._element.append(element._element || element);
     },
+    remove: function () {
+      this._element.remove();
+    },
     find: function (query) {
       return this._element.find(query);
     },

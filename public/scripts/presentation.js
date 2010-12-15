@@ -24,6 +24,25 @@ define(['model', 'slide'], function (Model, Slide) {
     this.trigger('slideChanged', [this._currentSlideIndex, slide]);
   };
 
+  Presentation.prototype.removeSlide = function (slide) {
+    var slideIndex = this._slides.indexOf(slide);
+
+    if (slideIndex === 0) {
+      this._slides.shift();
+    }
+    else if (slideIndex === this._slides.length - 1) {
+      this._slides.pop();
+    }
+    else if (slideIndex > 0) {
+      this._slides = this._slides.slice(0, slideIndex).concat(
+        this._slides.slice(slideIndex + 1));
+    }
+
+    this.trigger('slideRemoved', [slideIndex, slide]);
+
+    this.movePrevious();
+  };
+
   Presentation.prototype.movePrevious = function () {
     if (!this._currentSlide && this._slides.length > 0) {
       this.gotoSlide(this._slides[0]);

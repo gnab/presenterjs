@@ -58,6 +58,10 @@ define(['panel', 'list', 'editor', 'presenter', 'presentation'],
       list.gotoSlideByIndex(index);
       editor.content(slide.content());
     });
+
+    presentation.bind('slideRemoved', function (e, index, slide) {
+      list.removeSlideByIndex(index);
+    });
  
     editor.bind('input', function () {
       var slide = presentation.getCurrentSlide();
@@ -116,6 +120,13 @@ define(['panel', 'list', 'editor', 'presenter', 'presentation'],
       });
       this.get('#/add', function () {
         presentation.addSlide('empty slide');
+        this.redirect('#/list');
+      });
+      this.get('#/remove', function () {
+        var slide = presentation.getCurrentSlide();
+        if (slide) {
+          presentation.removeSlide(slide);
+        }
         this.redirect('#/list');
       });
     });

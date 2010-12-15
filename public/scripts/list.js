@@ -50,6 +50,28 @@ define(['element', 'presenter'], function (Element, Presenter) {
     });
   };
       
+  List.prototype.removeSlideByIndex = function (index) {
+    var entry = this._entries[index];
+    
+    if (entry === this._currentEntry) {
+      this._currentEntry = undefined;
+    }
+
+    entry.presenter.remove();
+    delete entry;
+
+    if (index === 0) {
+      this._entries.shift();
+    }
+    else if (index === this._entries.length - 1) {
+      this._entries.pop();
+    }
+    else if (index > 0) {
+      this._entries = this._entries.slice(0, index).concat(
+        this._entries.slice(index + 1));
+    }
+  };
+
   List.prototype.gotoSlideByIndex = function (index) {
     var slideHeigt, slideTop, slideBottom;
 
