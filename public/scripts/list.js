@@ -63,9 +63,10 @@ define(['element', 'presenter'], function (Element, Presenter) {
     slideTop = slideHeight * index;
     slideBottom = slideTop + slideHeight;
 
-    if (slideTop < this._element.scrollTop() ||
-        slideBottom > this._element.height() + this._element.scrollTop()) {
-      this._element.scrollTop(slideTop);
+    if (slideTop < this._entriesElement.scrollTop() ||
+        slideBottom > this._element.height() + 
+        this._entriesElement.scrollTop()) {
+      this._entriesElement.scrollTop(slideTop);
     }
   };
 

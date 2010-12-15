@@ -32,6 +32,12 @@ define(function () {
       }
       return this._element.val();
     },
+    scrollTop: function (value) {
+      if (value !== undefined) {
+        return this._element.scrollTop(value);
+      }
+      return this._element.scrollTop();
+    },
     show: function () {
       this._element.show();
     },
