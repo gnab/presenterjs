@@ -39,6 +39,9 @@ define(['element', 'presenter'], function (Element, Presenter) {
       self.trigger('slideOpened', slide);
     });
 
+    presenter.bind('selectstart', function () { return false; });
+    presenter.bind('mousedown', function () { return false; });
+
     slide.bind('contentChanged', function () {
       presenter.content(slide.content());
     });
