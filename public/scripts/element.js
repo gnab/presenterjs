@@ -47,6 +47,9 @@ define(function () {
     focus: function () {
       this._element.focus();
     },
+    blur: function () {
+      this._element.blur();
+    },
     width: function () {
       return this._element.outerWidth();
     },

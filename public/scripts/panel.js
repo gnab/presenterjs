@@ -50,10 +50,12 @@ define(['element'], function (Element) {
         if (this._currentTab) {
           this._currentTab.header.removeClass('active');
           this._currentTab.content.hide();
+          this._currentTab.content.blur();
         }
         this._currentTab = switchToTab;
         this._currentTab.header.addClass('active');
         this._currentTab.content.show();
+        this._currentTab.content.focus();
       }
     }
     return this._currentTab && this._currentTab.id;

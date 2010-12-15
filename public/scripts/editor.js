@@ -28,6 +28,10 @@ define(['element'], function (Element) {
     this._textElement.focus();
   };
 
+  Editor.prototype.blur = function () {
+    this._textElement.blur();
+  };
+
   Editor.prototype.content = function (content) {
     if (content !== undefined) {
       this._textElement.val(content);
