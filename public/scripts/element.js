@@ -38,6 +38,9 @@ define(function () {
     hide: function () {
       this._element.hide();
     },
+    focus: function () {
+      this._element.focus();
+    },
     width: function () {
       return this._element.outerWidth();
     },

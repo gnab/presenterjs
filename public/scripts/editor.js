@@ -24,6 +24,10 @@ define(['element'], function (Element) {
       width - this._margin * 2 - 4, height - this._margin * 2 - 4);
   };
 
+  Editor.prototype.focus = function () {
+    this._textElement.focus();
+  };
+
   Editor.prototype.content = function (content) {
     if (content !== undefined) {
       this._textElement.val(content);
