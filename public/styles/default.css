@@ -16,6 +16,25 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
   margin-bottom: 0;
 }
+.presenter {
+  background: #edece9;
+  overflow: hidden;
+  position: relative;
+}
+.frame {
+  border: 1px solid #c6c4c3;
+  background: #fff;
+  position: absolute;
+  -webkit-box-shadow: 0 0 15px #ccc;
+  -moz-box-shadow: 0 0 15px #ccc;
+  box-shadow: 0 0 15px #ccc;
+}
+.slide {
+  background: #fff;
+  border: 1px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
 #panel {
   background: #f8f8f8;
   border-right: 1px solid #c6c4c3;
@@ -73,32 +92,6 @@ h1, h2, h3, h4, h5, h6 {
 #list .entries {
   overflow-x: hidden;
 }
-#editor {
-  background: #fff;
-  position: relative;
-}
-#editor textarea {
-  position: relative;
-}
-.presenter {
-  background: #edece9;
-  overflow: hidden;
-  position: relative;
-}
-.frame {
-  border: 1px solid #c6c4c3;
-  background: #fff;
-  position: absolute;
-  -webkit-box-shadow: 0 0 15px #ccc;
-  -moz-box-shadow: 0 0 15px #ccc;
-  box-shadow: 0 0 15px #ccc;
-}
-.slide {
-  background: #fff;
-  border: 1px solid transparent;
-  position: relative;
-  overflow: hidden;
-}
 #list .presenter {
   background: #fff;
 }
@@ -119,4 +112,11 @@ h1, h2, h3, h4, h5, h6 {
   -webkit-box-shadow: 0 0 15px #ddd;
   -moz-box-shadow: 0 0 15px #ddd;
   box-shadow: 0 0 15px #ddd;
+}
+#editor {
+  background: #fff;
+  position: relative;
+}
+#editor textarea {
+  position: relative;
 }
