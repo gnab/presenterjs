@@ -78,7 +78,6 @@ define(['panel', 'list', 'editor', 'presenter', 'presentation'],
         container.height());
     }
     container.resize(updateLayout);
-    updateLayout();
   }
 
   function loadKeybordEvents() {
@@ -124,6 +123,7 @@ define(['panel', 'list', 'editor', 'presenter', 'presentation'],
 
     $(function () {
       router.run();
+      container.resize();
     });
   }
 
