@@ -1,7 +1,7 @@
 define(['panel', 'list', 'editor', 'presenter', 'presentation'], 
   function (Panel, List, Editor, Presenter, Presentation) {
 
-  var container, panel, list, editor, presenter, presentation;
+  var container, panel, list, editor, presenter, presentation, router;
 
   function loadEnvironment() {
     container = $(window);
@@ -11,7 +11,8 @@ define(['panel', 'list', 'editor', 'presenter', 'presentation'],
     loadPanel();
     loadLayout();
     loadKeybordEvents();
-    loadRoutes();
+
+    loadRouter();
   }
 
   function loadPresenter() {
@@ -43,6 +44,10 @@ define(['panel', 'list', 'editor', 'presenter', 'presentation'],
 
     list.bind('slideChanged', function (e, slide) {
       presentation.gotoSlide(slide);
+    });
+
+    list.bind('slideOpened', function (e, slide) {
+      router.setLocation('#/edit');  
     });
 
     presentation.bind('slideAdded', function (e, slide) {
@@ -91,8 +96,8 @@ define(['panel', 'list', 'editor', 'presenter', 'presentation'],
     });
   }
 
-  function loadRoutes() {
-    var app = $.sammy(function () {
+  function loadRouter() {
+    router = $.sammy(function () {
       this.get('', function () {
         this.redirect('#/list');
       });
@@ -109,7 +114,7 @@ define(['panel', 'list', 'editor', 'presenter', 'presentation'],
     });
 
     $(function () {
-      app.run();
+      router.run();
     });
   }
 

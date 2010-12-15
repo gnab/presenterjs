@@ -35,6 +35,10 @@ define(['element', 'presenter'], function (Element, Presenter) {
       self.trigger('slideChanged', slide);
     });
 
+    presenter.bind('dblclick', function () {
+      self.trigger('slideOpened', slide);
+    });
+
     slide.bind('contentChanged', function () {
       presenter.content(slide.content());
     });
