@@ -83,15 +83,23 @@ define(['panel', 'list', 'editor', 'presenter', 'presentation'],
 
   function loadKeybordEvents() {
     $(document).keydown(function (e) {
-      if (panel.tab() !== 'list') {
-        return;
+      if (panel.tab() === 'list') {
+        if (e.keyCode === 38) {
+          presentation.movePrevious();
+        }
+        else if (e.keyCode === 40) {
+          presentation.moveNext();
+        }
+        else if (e.keyCode === 13) {
+          if (presentation.getCurrentSlide()) {
+            router.setLocation('#/edit');
+          }
+        }
       }
-
-      if (e.keyCode === 38) {
-        presentation.movePrevious();
-      }
-      else if (e.keyCode === 40) {
-        presentation.moveNext();
+      else if (panel.tab() === 'edit') {
+        if (e.keyCode === 27) {
+          router.setLocation('#/list');
+        }
       }
     });
   }
