@@ -1,4 +1,5 @@
 define(['element', 'common'], function (Element, common) {
+  var widthFactor = 4, heightFactor = 3;
 
   Presenter.inherit(Element);
 
@@ -11,6 +12,10 @@ define(['element', 'common'], function (Element, common) {
   }
 
   Presenter.prototype.resize = function (left, top, width, height) {
+    if (height === undefined) {
+      height = Math.ceil(width / widthFactor * heightFactor);
+    }
+
     this.resizeElement(left, top, width, height);
     this._slide.resize(width, height);
   };
@@ -152,8 +157,8 @@ define(['element', 'common'], function (Element, common) {
   }
 
   function calculateSlideDimensions(containerWidth, containerHeight) {
-    var slideWidth, slideHeight, slideLeft, slideTop, zoomFactor
-        widthFactor = 4, heightFactor = 3, gutterSize = 20;
+    var slideWidth, slideHeight, slideLeft, slideTop, zoomFactor, 
+        gutterSize = 20;
 
     if (containerWidth / widthFactor > containerHeight / heightFactor) {
       slideHeight = containerHeight;

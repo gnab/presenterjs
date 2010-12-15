@@ -20,7 +20,7 @@ define(['element', 'presenter'], function (Element, Presenter) {
     for (key in this._entries) {
       if (this._entries.hasOwnProperty(key)) {
         this._entries[key].presenter.resize(undefined, undefined, width, 
-          250); 
+          undefined); 
       }
     }
   };
@@ -32,7 +32,7 @@ define(['element', 'presenter'], function (Element, Presenter) {
     this._entriesElement.append(presenter);
 
     presenter.content(slide.content());
-    presenter.resize(undefined, undefined, this.width(), 250);
+    presenter.resize(undefined, undefined, this.width(), undefined);
 
     presenter.bind('click', function () {
       self.trigger('slideChanged', slide);

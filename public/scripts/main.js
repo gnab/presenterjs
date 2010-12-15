@@ -113,7 +113,6 @@ define(['panel', 'list', 'editor', 'presenter', 'presentation'],
       });
       this.get('#/edit', function () {
         panel.tab('edit');
-        editor.focus();
       });
       this.get('#/add', function () {
         presentation.addSlide('empty slide');
