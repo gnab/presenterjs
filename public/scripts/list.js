@@ -60,16 +60,7 @@ define(['element', 'presenter'], function (Element, Presenter) {
     entry.presenter.remove();
     delete entry;
 
-    if (index === 0) {
-      this._entries.shift();
-    }
-    else if (index === this._entries.length - 1) {
-      this._entries.pop();
-    }
-    else if (index > 0) {
-      this._entries = this._entries.slice(0, index).concat(
-        this._entries.slice(index + 1));
-    }
+    this._entries.splice(index, 1);
   };
 
   List.prototype.gotoSlideByIndex = function (index) {

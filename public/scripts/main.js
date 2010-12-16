@@ -1,5 +1,5 @@
-define(['panel', 'list', 'editor', 'presenter', 'presentation'], 
-  function (Panel, List, Editor, Presenter, Presentation) {
+define(['common', 'panel', 'list', 'editor', 'presenter', 'presentation'], 
+  function (common, Panel, List, Editor, Presenter, Presentation) {
 
   var container, panel, list, editor, presenter, presentation, router;
 

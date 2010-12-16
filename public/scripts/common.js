@@ -1,4 +1,10 @@
 define(function () {
+  var Subclass = function () {};
+
+  Function.prototype.inherit = function (parent) {
+    Subclass.prototype = parent.prototype;
+    this.prototype = new Subclass();
+  };
 
   return {
     resizeElement: function (element, left, top, width, height) {
