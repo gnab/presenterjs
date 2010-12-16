@@ -53,6 +53,9 @@ define(function () {
     blur: function () {
       this._element.blur();
     },
+    innerWidth: function () {
+      return this._element[0].clientWidth;
+    },
     width: function () {
       return this._element.outerWidth();
     },

@@ -17,13 +17,19 @@ define(['element', 'presenter'], function (Element, Presenter) {
     this._entriesElement.resizeElement(undefined, undefined,
       width, height - toolbarHeight);
 
+    this.resizeEntries();
+  };
+
+  List.prototype.resizeEntries = function () {
+    var width = this._entriesElement.innerWidth();
+
     for (key in this._entries) {
       if (this._entries.hasOwnProperty(key)) {
         this._entries[key].presenter.resize(undefined, undefined, width, 
           undefined); 
       }
     }
-  };
+  }
   
   List.prototype.addSlide = function(slide) {
     var self = this, presenter = new Presenter('<div />');
@@ -32,7 +38,10 @@ define(['element', 'presenter'], function (Element, Presenter) {
     this._entriesElement.append(presenter);
 
     presenter.content(slide.content());
-    presenter.resize(undefined, undefined, this.width(), undefined);
+    presenter.resize(undefined, undefined, 
+      this._entriesElement.innerWidth(), undefined);
+
+    this.resizeEntries();
 
     presenter.bind('click', function () {
       self.trigger('slideChanged', slide);
@@ -59,6 +68,8 @@ define(['element', 'presenter'], function (Element, Presenter) {
 
     entry.presenter.remove();
     delete entry;
+
+    this.resizeEntries();
 
     this._entries.splice(index, 1);
   };
