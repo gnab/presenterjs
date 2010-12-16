@@ -75,7 +75,7 @@ define(['element', 'presenter'], function (Element, Presenter) {
   };
 
   List.prototype.gotoSlideByIndex = function (index) {
-    var slideHeigt, slideTop, slideBottom;
+    var scrollTop, slideHeigt, slideTop, slideBottom;
 
     if (this._currentEntry) {
       this._currentEntry.presenter.removeClass('active');
@@ -83,14 +83,17 @@ define(['element', 'presenter'], function (Element, Presenter) {
     this._currentEntry = this._entries[index];
     this._currentEntry.presenter.addClass('active');
 
+    scrollTop = this._entriesElement.scrollTop();
     slideHeight = this._currentEntry.presenter.height();
     slideTop = slideHeight * index;
     slideBottom = slideTop + slideHeight;
 
-    if (slideTop < this._entriesElement.scrollTop() ||
-        slideBottom > this._element.height() + 
-        this._entriesElement.scrollTop()) {
+    if (slideTop < scrollTop) {
       this._entriesElement.scrollTop(slideTop);
+    }
+    else if (slideBottom > scrollTop + this.height()) {
+      this._entriesElement.scrollTop(slideBottom - 
+        this._entriesElement.height());
     }
   };
 
