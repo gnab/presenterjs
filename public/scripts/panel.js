@@ -1,12 +1,26 @@
-define(['element'], function (Element) {
+define(['element', 'list', 'editor'], function (Element, List, Editor) {
 
   Panel.inherit(Element);
 
-  function Panel(id) {
+  function Panel(id, presentation) {
+    var self = this, list, editor;
+
     this._element = $('#' + id);
     this._headerElement = new Element(this.children('.header'));
     this._tabsElement = new Element(this.find('ul'));
     this._tabs = [];
+
+    list = new List('list', presentation),
+    editor = new Editor('editor', presentation);
+
+    this.addTab('list', 'List slides', list);
+    this.addTab('edit', 'Edit slide', editor);
+
+    this.gotoTab('list');
+
+    list.bind('slideOpened', function (e, slide) {
+      self.gotoTab('edit');
+    });
   }
 
   Panel.prototype.resize = function (left, top, width, height) {
@@ -23,8 +37,8 @@ define(['element'], function (Element) {
   };
 
   Panel.prototype.addTab = function (id, title, element) {
-    var tab = $('<li></li>'),
-        tabContent = $('<a href="#/' + id + '">' + title + '</a>');
+    var self = this, tab = $('<li></li>'),
+        tabContent = $('<a href="#">' + title + '</a>');
 
     tab.append(tabContent);
     this._tabsElement.append(tab);
@@ -35,6 +49,10 @@ define(['element'], function (Element) {
       header: tabContent, 
       content: element
     };
+
+    tabContent.bind('click', function () {
+      self.gotoTab(id);
+    });
   };
 
   Panel.prototype.gotoTab = function (id) {

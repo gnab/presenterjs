@@ -2,20 +2,26 @@ define(['element'], function (Element) {
 
   Editor.inherit(Element);
 
-  function Editor(id) {
-    var self, onInput;
+  function Editor(id, presentation) {
+    var self = this, onInput;
 
     Element.call(this, '#' + id);
     this._textElement = new Element(this.children('textarea'));
     this._margin = 20;
 
-    self = this;
-    onInput = function () {
-      self.trigger('input');
+    presentation.bind('slideChanged', function (e, index, slide) {
+      self._textElement.val(slide.content());
+    });
+
+    onContentChanged = function () {
+      var slide = presentation.getCurrentSlide();
+      if (slide) {
+        slide.content(self._textElement.val());
+      }
     };
 
-    this._textElement.bind("keyup", onInput);
-    this._textElement.bind("paste", onInput);
+    this._textElement.bind("keyup", onContentChanged);
+    this._textElement.bind("paste", onContentChanged);
   }
 
   Editor.prototype.resize = function (left, top, width, height) {
@@ -30,13 +36,6 @@ define(['element'], function (Element) {
 
   Editor.prototype.blur = function () {
     this._textElement.blur();
-  };
-
-  Editor.prototype.content = function (content) {
-    if (content !== undefined) {
-      this._textElement.val(content);
-    }
-    return this._textElement.val();
   };
 
   return Editor;

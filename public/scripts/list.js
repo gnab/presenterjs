@@ -2,7 +2,7 @@ define(['element', 'presenter'], function (Element, Presenter) {
 
   List.inherit(Element);
 
-  function List(id) {
+  function List(id, presentation) {
     var self = this;
 
     Element.call(this, '#' + id);
@@ -10,6 +10,30 @@ define(['element', 'presenter'], function (Element, Presenter) {
     this._toolbarElement = new Element(this.children('.toolbar'));
     this._entriesElement = new Element(this.children('.entries'));
     this._entries = [];
+    this._presentation = presentation;
+
+    this._toolbarElement.children('.add').bind('click', function () {
+      presentation.addSlide('empty slide');
+    });
+
+    this._toolbarElement.children('.remove').bind('click', function () {
+      var slide = presentation.getCurrentSlide();
+      if (slide) {
+        presentation.removeSlide(slide);
+      }
+    });
+
+    presentation.bind('slideAdded', function (e, slide) {
+      self.addSlide(slide);
+    });
+
+    presentation.bind('slideChanged', function (e, index, slide) {
+      self.gotoSlideByIndex(index);
+    });
+
+    presentation.bind('slideRemoved', function (e, index, slide) {
+      self.removeSlideByIndex(index);
+    });
 
     this.bind('focus', function () {
       if (self._currentScrollTop) {
@@ -56,7 +80,7 @@ define(['element', 'presenter'], function (Element, Presenter) {
     this.resizeEntries();
 
     presenter.bind('click', function () {
-      self.trigger('slideChanged', slide);
+      self._presentation.gotoSlide(slide);
     });
 
     presenter.bind('dblclick', function () {

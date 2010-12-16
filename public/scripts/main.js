@@ -1,55 +1,16 @@
-define(['common', 'panel', 'list', 'editor', 'presenter', 'presentation'], 
-  function (common, Panel, List, Editor, Presenter, Presentation) {
+define(['common', 'panel', 'presenter', 'presentation'], 
+  function (common, Panel, Presenter, Presentation) {
 
-  var container, panel, list, editor, presenter, presentation, router;
+  var container, panel, presenter, presentation, router;
 
   function loadEnvironment() {
     container = $(window);
     presentation = new Presentation();
     presenter = new Presenter('#presenter', presentation);
+    panel = new Panel('panel', presentation);
 
-    loadPanel();
     loadLayout();
     loadKeybordEvents();
-
-    loadRouter();
-  }
-
-  function loadPanel() {
-    list = new List('list'),
-    editor = new Editor('editor');
-
-    panel = new Panel('panel');
-    panel.addTab('list', 'List slides', list);
-    panel.addTab('edit', 'Edit slide', editor);
-
-    list.bind('slideChanged', function (e, slide) {
-      presentation.gotoSlide(slide);
-    });
-
-    list.bind('slideOpened', function (e, slide) {
-      router.setLocation('#/edit');  
-    });
-
-    presentation.bind('slideAdded', function (e, slide) {
-      list.addSlide(slide);
-    });
-
-    presentation.bind('slideChanged', function (e, index, slide) {
-      list.gotoSlideByIndex(index);
-      editor.content(slide.content());
-    });
-
-    presentation.bind('slideRemoved', function (e, index, slide) {
-      list.removeSlideByIndex(index);
-    });
- 
-    editor.bind('input', function () {
-      var slide = presentation.getCurrentSlide();
-      if (slide) {
-        slide.content(editor.content());
-      }
-    });
   }
 
   function loadLayout() {
@@ -63,6 +24,7 @@ define(['common', 'panel', 'list', 'editor', 'presenter', 'presentation'],
         container.height());
     }
     container.resize(updateLayout);
+    updateLayout();
   }
 
   function loadKeybordEvents() {
@@ -74,47 +36,21 @@ define(['common', 'panel', 'list', 'editor', 'presenter', 'presentation'],
         else if (e.keyCode === 40) {
           presentation.moveNext();
         }
-        else if (e.keyCode === 13) {
-          if (presentation.getCurrentSlide()) {
-            router.setLocation('#/edit');
-          }
-        }
       }
       else if (panel.gotoTab() === 'edit') {
         if (e.keyCode === 27) {
-          router.setLocation('#/list');
+          panel.gotoTab('list');
         }
       }
     });
-  }
-
-  function loadRouter() {
-    router = $.sammy(function () {
-      this.get('', function () {
-        this.redirect('#/list');
-      });
-      this.get('#/list', function () {
-        panel.gotoTab('list');
-      });
-      this.get('#/edit', function () {
-        panel.gotoTab('edit');
-      });
-      this.get('#/add', function () {
-        presentation.addSlide('empty slide');
-        this.redirect('#/list');
-      });
-      this.get('#/remove', function () {
-        var slide = presentation.getCurrentSlide();
-        if (slide) {
-          presentation.removeSlide(slide);
+    $(document).keyup(function (e) {
+      if (panel.gotoTab() === 'list') {
+        if (e.keyCode === 13) {
+          if (presentation.getCurrentSlide()) {
+            panel.gotoTab('edit');
+          }
         }
-        this.redirect('#/list');
-      });
-    });
-
-    $(function () {
-      router.run();
-      container.resize();
+      }
     });
   }
 
