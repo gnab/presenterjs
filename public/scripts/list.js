@@ -3,11 +3,23 @@ define(['element', 'presenter'], function (Element, Presenter) {
   List.inherit(Element);
 
   function List(id) {
+    var self = this;
+
     Element.call(this, '#' + id);
 
     this._toolbarElement = new Element(this.children('.toolbar'));
     this._entriesElement = new Element(this.children('.entries'));
     this._entries = [];
+
+    this.bind('focus', function () {
+      if (self._currentScrollTop) {
+        self._entriesElement.scrollTop(self._currentScrollTop);
+      }
+    });
+
+    this.bind('blur', function () {
+      self._currentScrollTop = self._entriesElement.scrollTop();
+    });
   }
 
   List.prototype.resize = function (left, top, width, height) {
