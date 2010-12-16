@@ -126,6 +126,9 @@ define(['common', 'panel', 'list', 'editor', 'presenter', 'presentation'],
         var slide = presentation.getCurrentSlide();
         if (slide) {
           presentation.removeSlide(slide);
+          if (!presentation.getCurrentSlide()) {
+            presenter.content('');
+          }
         }
         this.redirect('#/list');
       });
