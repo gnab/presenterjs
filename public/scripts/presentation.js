@@ -25,7 +25,7 @@ define(['model', 'slide'], function (Model, Slide) {
   };
 
   Presentation.prototype.removeSlide = function (slide) {
-    var slideIndex = this._slides.indexOf(slide);
+    var slideIndex = this._slides.indexOf(slide), nextIndex;
 
     if (slideIndex === 0) {
       this._slides.shift();
@@ -40,7 +40,15 @@ define(['model', 'slide'], function (Model, Slide) {
 
     this.trigger('slideRemoved', [slideIndex, slide]);
 
-    this.movePrevious();
+    nextIndex = slideIndex === 0 ? slideIndex : slideIndex - 1;
+
+    if (this._slides.length === 0) {
+      this._currentSlide = undefined;
+      this._currentSlideIndex = undefined;
+    }
+    else {
+      this.gotoSlide(this._slides[nextIndex]);
+    }
   };
 
   Presentation.prototype.movePrevious = function () {
