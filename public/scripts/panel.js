@@ -22,10 +22,6 @@ define(['element'], function (Element) {
     }
   };
 
-  Panel.prototype.width = function () {
-    return this._element.outerWidth();
-  };
-
   Panel.prototype.addTab = function (id, title, element) {
     var tab = $('<li></li>'),
         tabContent = $('<a href="#/' + id + '">' + title + '</a>');
@@ -41,14 +37,14 @@ define(['element'], function (Element) {
     };
   };
 
-  Panel.prototype.tab = function (id) {
+  Panel.prototype.gotoTab = function (id) {
     if (id) {
       var switchToTab = this._tabs[id];
       if (switchToTab) {
         if (this._currentTab) {
           this._currentTab.header.removeClass('active');
-          this._currentTab.content.hide();
           this._currentTab.content.blur();
+          this._currentTab.content.hide();
         }
         this._currentTab = switchToTab;
         this._currentTab.header.addClass('active');

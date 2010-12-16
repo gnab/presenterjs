@@ -86,7 +86,7 @@ define(['common', 'panel', 'list', 'editor', 'presenter', 'presentation'],
 
   function loadKeybordEvents() {
     $(document).keydown(function (e) {
-      if (panel.tab() === 'list') {
+      if (panel.gotoTab() === 'list') {
         if (e.keyCode === 38) {
           presentation.movePrevious();
         }
@@ -99,7 +99,7 @@ define(['common', 'panel', 'list', 'editor', 'presenter', 'presentation'],
           }
         }
       }
-      else if (panel.tab() === 'edit') {
+      else if (panel.gotoTab() === 'edit') {
         if (e.keyCode === 27) {
           router.setLocation('#/list');
         }
@@ -113,10 +113,10 @@ define(['common', 'panel', 'list', 'editor', 'presenter', 'presentation'],
         this.redirect('#/list');
       });
       this.get('#/list', function () {
-        panel.tab('list');
+        panel.gotoTab('list');
       });
       this.get('#/edit', function () {
-        panel.tab('edit');
+        panel.gotoTab('edit');
       });
       this.get('#/add', function () {
         presentation.addSlide('empty slide');
