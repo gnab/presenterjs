@@ -10,7 +10,14 @@ define(['model', 'slide'], function (Model, Slide) {
   Presentation.prototype.title = Model.createProperty('title');
 
   Presentation.prototype.addSlide = function (content) {
-    var slide = new Slide(content);
+    var self = this, slide;
+    
+    slide = new Slide(content);
+
+    slide.bind('contentChanged', function (e, content) {
+      self.trigger('contentChanged', content);
+    });
+
     this._slides.push(slide);
     this.trigger('slideAdded', slide);
     if (!this._currentSlide) {
@@ -22,6 +29,7 @@ define(['model', 'slide'], function (Model, Slide) {
     this._currentSlide = slide;
     this._currentSlideIndex = this._slides.indexOf(slide);
     this.trigger('slideChanged', [this._currentSlideIndex, slide]);
+    this.trigger('contentChanged', slide.content());
   };
 
   Presentation.prototype.removeSlide = function (slide) {
@@ -36,6 +44,7 @@ define(['model', 'slide'], function (Model, Slide) {
     if (this._slides.length === 0) {
       this._currentSlide = undefined;
       this._currentSlideIndex = undefined;
+      this.trigger('contentChanged', '');
     }
     else {
       this.gotoSlide(this._slides[nextIndex]);

@@ -6,32 +6,13 @@ define(['common', 'panel', 'list', 'editor', 'presenter', 'presentation'],
   function loadEnvironment() {
     container = $(window);
     presentation = new Presentation();
+    presenter = new Presenter('#presenter', presentation);
 
-    loadPresenter();
     loadPanel();
     loadLayout();
     loadKeybordEvents();
 
     loadRouter();
-  }
-
-  function loadPresenter() {
-    var currentSlide, setContent;
-
-    presenter = new Presenter('#presenter');
-
-    setContent = function (e, content) {
-      presenter.content(content);
-    };
-
-    presentation.bind('slideChanged', function (e, index, slide) {
-      if (currentSlide) {
-        currentSlide.unbind('contentChanged', setContent);
-      }
-      setContent(undefined, slide.content());
-      slide.bind('contentChanged', setContent);
-      currentSlide = slide;
-    });
   }
 
   function loadPanel() {
@@ -126,9 +107,6 @@ define(['common', 'panel', 'list', 'editor', 'presenter', 'presentation'],
         var slide = presentation.getCurrentSlide();
         if (slide) {
           presentation.removeSlide(slide);
-          if (!presentation.getCurrentSlide()) {
-            presenter.content('');
-          }
         }
         this.redirect('#/list');
       });

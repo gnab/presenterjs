@@ -44,7 +44,7 @@ define(['element', 'presenter'], function (Element, Presenter) {
   }
   
   List.prototype.addSlide = function(slide) {
-    var self = this, presenter = new Presenter('<div />');
+    var self = this, presenter = new Presenter('<div />', slide);
 
     this._entries.push({ slide: slide, presenter: presenter });
     this._entriesElement.append(presenter);
@@ -65,10 +65,6 @@ define(['element', 'presenter'], function (Element, Presenter) {
 
     presenter.bind('selectstart', function () { return false; });
     presenter.bind('mousedown', function () { return false; });
-
-    slide.bind('contentChanged', function () {
-      presenter.content(slide.content());
-    });
   };
       
   List.prototype.removeSlideByIndex = function (index) {

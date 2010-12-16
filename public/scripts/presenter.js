@@ -3,10 +3,18 @@ define(['element', 'common'], function (Element, common) {
 
   Presenter.inherit(Element);
 
-  function Presenter(element) {
+  function Presenter(element, model) {
+    var self = this;
+
     Element.call(this, element);
 
     this._slide = createSlide(this._element);
+
+    if (model) {
+      model.bind('contentChanged', function (e, content) {
+        self.content(content);
+      });
+    }
 
     this.addClass('presenter');
   }
