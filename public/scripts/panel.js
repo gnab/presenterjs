@@ -39,8 +39,6 @@ define(['element'], function (Element) {
       header: tabContent, 
       content: element
     };
-
-    element.hide();
   };
 
   Panel.prototype.tab = function (id) {
