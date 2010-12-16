@@ -36,6 +36,12 @@ define(['common', 'panel', 'presenter', 'presentation'],
         else if (e.keyCode === 40) {
           presentation.moveNext();
         }
+        else if (e.keyCode === 46) {
+          var slide = presentation.getCurrentSlide();
+          if (slide) {
+            presentation.removeSlide(slide);
+          }
+        }
       }
       else if (panel.gotoTab() === 'edit') {
         if (e.keyCode === 27) {
