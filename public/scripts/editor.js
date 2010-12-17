@@ -3,7 +3,7 @@ define(['element'], function (Element) {
   Editor.inherit(Element);
 
   function Editor(id, presentation) {
-    var self = this, onInput;
+    var self = this, onContentChanged;
 
     Element.call(this, '#' + id);
     this._textElement = new Element(this.children('textarea'));
