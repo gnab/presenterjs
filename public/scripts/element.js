@@ -62,6 +62,18 @@ define(function () {
     height: function () {
       return this._element.outerHeight();
     },
+    selectionStart: function (pos) {
+      if (pos !== undefined) {
+        this._element[0].selectionStart = pos;
+      }
+      return this._element[0].selectionStart;
+    },
+    selectionEnd: function (pos) {
+      if (pos !== undefined) {
+        this._element[0].selectionEnd = pos;
+      }
+      return this._element[0].selectionEnd;
+    },
     resizeElement: function (left, top, width, height) {
       var style = {};
 

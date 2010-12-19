@@ -85,26 +85,45 @@ h1, h2, h3, h4, h5, h6 {
   border-bottom: 1px solid #eee;
   font-family: 'Helvetica Neue', Arial, Helvetica, 'Liberation Sans', FreeSans, sans-serif;
   font-size: 0.8em;
-  padding: 1em;
+  padding: 1em 1em 1em 1.5em;
 }
 .toolbar a {
   color: #777;
+  margin-right: 10px;
+  padding-left: 20px;
   text-decoration: none;
+}
+.toolbar a.notext {
+  margin-right: 6px;
+  padding-left: 16px;
 }
 .toolbar a:hover {
   color: #000;
   text-decoration: underline;
 }
+.toolbar .add {
+  background: url(../images/add.png) no-repeat;
+}
+.toolbar .remove {
+  background: url(../images/delete.png) no-repeat;
+}
+.toolbar .bold {
+  background: url(../images/bold.png) no-repeat;
+}
+.toolbar .italic {
+  background: url(../images/italic.png) no-repeat;
+}
+.toolbar .link {
+  background: url(../images/link.png) no-repeat;
+}
+.toolbar .code {
+  background: url(../images/code.png) no-repeat;
+}
+.toolbar .inline-code {
+  background: url(../images/inline-code.png) no-repeat;
+}
 #list {
   background: #fff;
-}
-#list .toolbar .add {
-  background: url(../images/add.png) no-repeat;
-  padding-left: 20px;
-}
-#list .toolbar .remove {
-  background: url(../images/delete.png) no-repeat;
-  padding-left: 20px;
 }
 #list .entries {
   overflow-x: hidden;
@@ -132,7 +151,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 #editor {
   background: #fff;
-  display: none;
   position: relative;
 }
 #editor textarea {
