@@ -21,6 +21,45 @@ define(['element', 'list', 'editor'], function (Element, List, Editor) {
     list.bind('slideOpened', function (e, slide) {
       self.gotoTab('edit');
     });
+
+    this.loadKeybordEvents(presentation);
+  }
+
+  Panel.prototype.loadKeybordEvents = function (presentation) {
+    var self = this;
+    $(document).keydown(function (e) {
+      if (self._currentTab.id === 'list') {
+        if (e.keyCode === 38) {
+          presentation.movePrevious();
+        }
+        else if (e.keyCode === 40) {
+          presentation.moveNext();
+        }
+        else if (e.keyCode === 45) {
+          presentation.addSlide('');
+        }
+        else if (e.keyCode === 46) {
+          var slide = presentation.getCurrentSlide();
+          if (slide) {
+            presentation.removeSlide(slide);
+          }
+        }
+      }
+      else if (self._currentTab.id === 'edit') {
+        if (e.keyCode === 27) {
+          self.gotoTab('list');
+        }
+      }
+    });
+    $(document).keyup(function (e) {
+      if (self._currentTab.id === 'list') {
+        if (e.keyCode === 13) {
+          if (presentation.getCurrentSlide()) {
+            self.gotoTab('edit');
+          }
+        }
+      }
+    });
   }
 
   Panel.prototype.resize = function (left, top, width, height) {
