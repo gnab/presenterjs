@@ -3,13 +3,15 @@ define(['element'], function (Element) {
   Editor.inherit(Element);
 
   function Editor(id, presentation) {
-    var self = this, onContentChanged;
+    var self = this, onInput;
 
     Element.call(this, '#' + id);
 
     this._toolbarElement = new Element(this.children('.toolbar'));
     this._textElement = new Element(this.children('textarea'));
     this._margin = 20;
+
+    loadAutoIndent(this);
 
     this._toolbarElement.children('.bold').bind('click', function () {
       self.surroundSelection('__', '__');
@@ -35,15 +37,54 @@ define(['element'], function (Element) {
       self._textElement.val(slide.content());
     });
 
-    onContentChanged = function () {
+    onInput = function () {
       var slide = presentation.getCurrentSlide();
+
       if (slide) {
         slide.content(self._textElement.val());
       }
     };
 
-    this._textElement.bind("keyup", onContentChanged);
-    this._textElement.bind("paste", onContentChanged);
+    this._textElement.bind('keyup', onInput);
+    this._textElement.bind('paste', onInput);
+
+  }
+
+  function loadAutoIndent(self) {
+    self._textElement.bind('keydown', function (e) {
+      var text, pos, start, i, indent, indentedText;
+
+      if (e.keyCode === 13) {
+        text = self._textElement.val();
+        pos = Math.min(self._textElement.selectionStart(),
+          self._textElement.selectionEnd());
+
+        start = pos; 
+        while (start > 0 && text[start - 1] !== '\n') {
+          start--;
+        }
+
+        indent = 0;
+        while (text[start] === ' ') {
+          start++;
+          indent++;
+        }
+
+        indentedText = text.substring(0, pos) + '\n';
+        for (i = 0; i < indent; i++) {
+          indentedText += ' ';
+        }
+        indentedText += text.substring(pos);
+
+        self._textElement.val(indentedText);
+        pos += 1 + indent;
+        self._textElement.selectionStart(pos);
+        self._textElement.selectionEnd(pos);
+        indent = 0;
+
+        return false;
+      }
+    });
   }
 
   Editor.prototype.surroundSelection = function (before, after) {
