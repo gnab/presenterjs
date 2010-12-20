@@ -11,27 +11,9 @@ define(['element'], function (Element) {
     this._textElement = new Element(this.children('textarea'));
     this._margin = 20;
 
+    loadToolbarCommands(this);
     loadAutoIndent(this);
-
-    this._toolbarElement.children('.bold').bind('click', function () {
-      self.surroundSelection('__', '__');
-    });
-
-    this._toolbarElement.children('.italic').bind('click', function () {
-      self.surroundSelection('_', '_');
-    });
-
-    this._toolbarElement.children('.link').bind('click', function () {
-      self.surroundSelection('[', '](http://)');
-    });
-
-    this._toolbarElement.children('.inline-code').bind('click',function () {
-      self.surroundSelection('`', '`');
-    });
-
-    this._toolbarElement.children('.code').bind('click',function () {
-      self.surroundSelection('\n\n    ', '');
-    });
+    loadSoftTabs(this);
 
     presentation.bind('slideChanged', function (e, index, slide) {
       self._textElement.val(slide.content());
@@ -47,7 +29,28 @@ define(['element'], function (Element) {
 
     this._textElement.bind('keyup', onInput);
     this._textElement.bind('paste', onInput);
+  }
 
+  function loadToolbarCommands(self) {
+    self._toolbarElement.children('.bold').bind('click', function () {
+      self.surroundSelection('__', '__');
+    });
+
+    self._toolbarElement.children('.italic').bind('click', function () {
+      self.surroundSelection('_', '_');
+    });
+
+    self._toolbarElement.children('.link').bind('click', function () {
+      self.surroundSelection('[', '](http://)');
+    });
+
+    self._toolbarElement.children('.inline-code').bind('click',function () {
+      self.surroundSelection('`', '`');
+    });
+
+    self._toolbarElement.children('.code').bind('click',function () {
+      self.surroundSelection('\n\n    ', '');
+    });
   }
 
   function loadAutoIndent(self) {
@@ -81,6 +84,36 @@ define(['element'], function (Element) {
         self._textElement.selectionStart(pos);
         self._textElement.selectionEnd(pos);
         indent = 0;
+
+        return false;
+      }
+    });
+  }
+
+  function loadSoftTabs(self) {
+    self._textElement.bind('keydown', function (e) {
+      var text, pos, start, spaces = '  ';
+
+      if (e.keyCode === 9) {
+        text = self._textElement.val();
+        pos = Math.min(self._textElement.selectionStart(),
+          self._textElement.selectionEnd());
+
+        start = pos; 
+        while (start > 0 && text[start - 1] !== '\n') {
+          start--;
+        }
+
+        if ((pos - start) % 2 == 1) {
+          spaces = ' ';
+        }
+
+        text = text.substring(0, pos) + spaces + text.substring(pos);
+
+        self._textElement.val(text);
+        pos += spaces.length;
+        self._textElement.selectionStart(pos);
+        self._textElement.selectionEnd(pos);
 
         return false;
       }
