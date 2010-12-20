@@ -92,32 +92,64 @@ define(['element'], function (Element) {
 
   function loadSoftTabs(self) {
     self._textElement.bind('keydown', function (e) {
-      var text, pos, start, spaces = '  ';
+      var text, pos, start, i, spaces, tabWidth = 2, tabbedText;
 
-      if (e.keyCode === 9) {
+      if (e.keyCode === 8 || e.keyCode === 9) {
         text = self._textElement.val();
         pos = Math.min(self._textElement.selectionStart(),
           self._textElement.selectionEnd());
+        start = pos;
 
-        start = pos; 
-        while (start > 0 && text[start - 1] !== '\n') {
-          start--;
+        if (e.keyCode === 8) { // backspace
+          if (self.getSelection() !== '') {
+            return true;
+          }
+
+          while (start > 0 && text[start - 1] === ' ') {
+            start--;
+          }
+
+          if (pos - start < tabWidth || (pos - start) % tabWidth !== 0) {
+            return true;
+          }
+
+          text = text.substring(0, pos - tabWidth) + text.substring(pos);
+
+          pos -= tabWidth;
         }
+        else if (e.keyCode === 9) { // tab
+          while (start > 0 && text[start - 1] !== '\n') {
+            start--;
+          }
 
-        if ((pos - start) % 2 == 1) {
-          spaces = ' ';
+          spaces = (pos - start) % tabWidth || tabWidth;
+    
+          tabbedText = text.substring(0, pos);
+          for (i = 0; i < spaces; i++) {
+            tabbedText += ' ';
+          }
+          tabbedText += text.substring(pos);
+
+          text = tabbedText;
+          pos += spaces;
         }
-
-        text = text.substring(0, pos) + spaces + text.substring(pos);
 
         self._textElement.val(text);
-        pos += spaces.length;
         self._textElement.selectionStart(pos);
         self._textElement.selectionEnd(pos);
 
         return false;
       }
     });
+  }
+
+  Editor.prototype.getSelection = function () {
+    var start, end;
+
+    start = this._textElement.selectionStart();
+    end = this._textElement.selectionEnd();
+
+    return this._textElement.val().substring(start, end);
   }
 
   Editor.prototype.surroundSelection = function (before, after) {
