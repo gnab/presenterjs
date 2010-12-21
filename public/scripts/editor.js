@@ -10,10 +10,12 @@ define(['element'], function (Element) {
     this._toolbarElement = new Element(this.children('.toolbar'));
     this._textElement = new Element(this.children('textarea'));
     this._margin = 20;
+    this._tabWidth = 2;
 
     loadToolbarCommands(this);
     loadAutoIndent(this);
     loadSoftTabs(this);
+    loadSoftTabsBackspace(this);
 
     presentation.bind('slideChanged', function (e, index, slide) {
       self._textElement.val(slide.content());
@@ -33,130 +35,118 @@ define(['element'], function (Element) {
 
   function loadToolbarCommands(self) {
     self._toolbarElement.children('.bold').bind('click', function () {
-      self.surroundSelection('__', '__');
+      surroundSelection(self, '__', '__');
     });
 
     self._toolbarElement.children('.italic').bind('click', function () {
-      self.surroundSelection('_', '_');
+      surroundSelection(self, '_', '_');
     });
 
     self._toolbarElement.children('.link').bind('click', function () {
-      self.surroundSelection('[', '](http://)');
+      surroundSelection(self, '[', '](http://)');
     });
 
     self._toolbarElement.children('.inline-code').bind('click',function () {
-      self.surroundSelection('`', '`');
+      surroundSelection(self, '`', '`');
     });
 
     self._toolbarElement.children('.code').bind('click',function () {
-      self.surroundSelection('\n\n    ', '');
+      surroundSelection(self, '\n\n    ', '');
     });
+  }
+
+  function surroundSelection(self, before, after) {
+    var text = self._textElement.val(),
+        selection = getSelection(self);
+
+    selection.text = before + selection.text + after;
+    selection.start += before.length;
+    selection.end += before.length;
+
+    setSelection(self, selection);
   }
 
   function loadAutoIndent(self) {
     self._textElement.bind('keydown', function (e) {
-      var text, pos, start, i, indent, indentedText;
+      var indent, selection;
 
       if (e.keyCode === 13) {
-        text = self._textElement.val();
-        pos = Math.min(self._textElement.selectionStart(),
-          self._textElement.selectionEnd());
+        indent = getCurrentLineIndent(self);
+        selection = getSelection(self);
 
-        start = pos; 
-        while (start > 0 && text[start - 1] !== '\n') {
-          start--;
-        }
-
-        indent = 0;
-        while (text[start] === ' ') {
-          start++;
-          indent++;
-        }
-
-        indentedText = text.substring(0, pos) + '\n';
-        for (i = 0; i < indent; i++) {
-          indentedText += ' ';
-        }
-        indentedText += text.substring(pos);
-
-        self._textElement.val(indentedText);
-        pos += 1 + indent;
-        self._textElement.selectionStart(pos);
-        self._textElement.selectionEnd(pos);
-        indent = 0;
+        selection.text = '\n' + repeatCharacter(' ', indent);
+        selection.start += 1 + indent;
+        selection.end = selection.start;
+        
+        setSelection(self, selection);
 
         return false;
       }
     });
+  }
+
+  function getCurrentLineIndent(self) {
+    var text = self._textElement.val(),
+        pos = getSelection(self).start,
+        indent = 0;
+
+    while (pos > 0 && text[pos - 1] !== '\n') { pos--; }
+    while (text[pos++] === ' ') { indent++; }
+
+    return indent;
   }
 
   function loadSoftTabs(self) {
     self._textElement.bind('keydown', function (e) {
-      var text, pos, start, i, spaces, tabWidth = 2, tabbedText;
+      var pos, spaces, selection;
 
-      if (e.keyCode === 8 || e.keyCode === 9) {
-        text = self._textElement.val();
-        pos = Math.min(self._textElement.selectionStart(),
-          self._textElement.selectionEnd());
-        start = pos;
+      if (e.keyCode === 9) { 
+        selection = getSelection(self);
+        pos = getCurrentLinePos(self);
+        spaces = pos % self._tabWidth || self._tabWidth;
+  
+        selection.text = repeatCharacter(' ', spaces);
+        selection.start += spaces;
+        selection.end = selection.start;
 
-        if (e.keyCode === 8) { // backspace
-          if (self.getSelection() !== '') {
+        setSelection(self, selection);
+        return false;
+      }
+    });
+  }
+
+  function loadSoftTabsBackspace(self) {
+    self._textElement.bind('keydown', function (e) {
+      var pos, spaces, selection;
+
+      if (e.keyCode === 8) { 
+        selection = getSelection(self);
+        pos = getCurrentLinePos(self);
+        spaces = getPrecedingNumberOfSpaces(self);
+
+        if (selection.text !== '' ||
+            spaces < self._tabWidth || 
+            pos % self._tabWidth !== 0) {
+          
             return true;
-          }
-
-          while (start > 0 && text[start - 1] === ' ') {
-            start--;
-          }
-
-          if (pos - start < tabWidth || (pos - start) % tabWidth !== 0) {
-            return true;
-          }
-
-          text = text.substring(0, pos - tabWidth) + text.substring(pos);
-
-          pos -= tabWidth;
-        }
-        else if (e.keyCode === 9) { // tab
-          while (start > 0 && text[start - 1] !== '\n') {
-            start--;
-          }
-
-          spaces = (pos - start) % tabWidth || tabWidth;
-    
-          tabbedText = text.substring(0, pos);
-          for (i = 0; i < spaces; i++) {
-            tabbedText += ' ';
-          }
-          tabbedText += text.substring(pos);
-
-          text = tabbedText;
-          pos += spaces;
         }
 
-        self._textElement.val(text);
-        self._textElement.selectionStart(pos);
-        self._textElement.selectionEnd(pos);
+        selection.text = '';
+        selection.start -= spaces % self._tabWidth || self._tabWidth;
+        selection.end -= spaces % self._tabWidth || self._tabWidth;
+
+        setSelection(self, selection, false);
 
         return false;
       }
     });
   }
 
-  Editor.prototype.getSelection = function () {
-    var start, end;
+  function getSelection(self) {
+    var start, end, tmp;
 
-    start = this._textElement.selectionStart();
-    end = this._textElement.selectionEnd();
-
-    return this._textElement.val().substring(start, end);
-  }
-
-  Editor.prototype.surroundSelection = function (before, after) {
-    var start, end, tmp, text, selection;
-
-    start = this._textElement.selectionStart();
-    end = this._textElement.selectionEnd();
+    start = self._textElement.selectionStart();
+    end = self._textElement.selectionEnd();
 
     if (start > end) {
       tmp = start;
@@ -164,19 +154,58 @@ define(['element'], function (Element) {
       end = tmp;
     }
 
-    text = this._textElement.val();
-    selection = text.substring(start, end);
+    return {
+      start: start,
+      end: end,
+      text: self._textElement.val().substring(start, end)
+    };
+  }
 
-    text = text.substring(0, start) + before + selection + after +
-      text.substring(end);
+  function getPrecedingNumberOfSpaces(self) {
+    var text = self._textElement.val(),
+        start = getSelection(self).start,
+        pos = start;
 
-    this._textElement.val(text);
+    while (start > 0 && text[start - 1] === ' ') {
+      start--;
+    }
 
-    start += before.length;
-    end += before.length;
+    return pos - start;
+  }
 
-    this._textElement.selectionStart(start);
-    this._textElement.selectionEnd(end);
+  function getCurrentLinePos(self) {
+    var text = self._textElement.val(),
+        start = getSelection(self).start,
+        pos = start;
+
+    while (start > 0 && text[start - 1] !== '\n') {
+      start--;
+    }
+
+    return pos - start;
+  }
+
+  function repeatCharacter(character, count) {
+    for (var i = 0, str = ''; i < count; i++) {
+      str += character;
+    }
+    return str;
+  }
+
+  function setSelection(self, selection, overrideSelectionStart) {
+    var text = self._textElement.val(),
+        currentSelection = getSelection(self);
+
+    if (overrideSelectionStart !== undefined) {
+      currentSelection.start = selection.start;
+    }
+
+    text = text.substring(0, currentSelection.start) + selection.text + 
+      text.substring(currentSelection.end);
+
+    self._textElement.val(text);
+    self._textElement.selectionStart(selection.start);
+    self._textElement.selectionEnd(selection.end);
   }
 
   Editor.prototype.resize = function (left, top, width, height) {
