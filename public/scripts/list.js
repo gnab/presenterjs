@@ -12,23 +12,35 @@ define(['element', 'presenter'], function (Element, Presenter) {
     this._entries = [];
     this._presentation = presentation;
 
-    this._toolbarElement.children('.add').bind('click', function () {
-      presentation.addSlide();
-    });
-
-    this._toolbarElement.children('.remove').bind('click', function () {
-      var slide = presentation.getCurrentSlide();
-      if (slide) {
-        presentation.removeSlide(slide);
-      }
-    });
+    loadToolbarCommands(this);
 
     presentation.bind('slideAdded', function (e, slide) {
       self.addSlide(slide);
     });
 
     presentation.bind('slideChanged', function (e, index, slide) {
-      self.gotoSlideByIndex(index);
+      if (slide) {
+        self.gotoSlideByIndex(index);
+      }
+    });
+
+    presentation.bind('slideMoved', function (e, index, newIndex, slide) {
+      var entry = self._entries[index];
+
+      self._entries.splice(index, 1);
+      entry.presenter.detach();
+
+      self._entries.splice(newIndex, 0, entry);
+      if (newIndex > index) {
+        self._entries[newIndex - 1].presenter.after(entry.presenter);
+      }
+      else {
+        self._entries[newIndex + 1].presenter.before(entry.presenter);
+      }
+
+      if (self._currentEntry.slide === slide) {
+        scrollEntryIntoView(self, self._currentEntry); 
+      }
     });
 
     presentation.bind('slideRemoved', function (e, index, slide) {
@@ -43,6 +55,44 @@ define(['element', 'presenter'], function (Element, Presenter) {
 
     this.bind('blur', function () {
       self._currentScrollTop = self._entriesElement.scrollTop();
+    });
+  }
+
+  function loadToolbarCommands(self) {
+    self._toolbarElement.children('.add').bind('click', function (e) {
+      self._presentation.addSlide();
+    });
+
+    self._toolbarElement.children('.remove').bind('click', function () {
+      var slide = self._presentation.getCurrentSlide();
+      if (slide) {
+        self._presentation.removeSlide(slide);
+      }
+    });
+
+    self._toolbarElement.children('.up').bind('click', function () {
+      var slide = self._presentation.getCurrentSlide();
+      if (slide) {
+        self._presentation.moveSlideUp(slide);
+      }
+    });
+
+    self._toolbarElement.children('.down').bind('click', function () {
+      var slide = self._presentation.getCurrentSlide();
+      if (slide) {
+        self._presentation.moveSlideDown(slide);
+      }
+    });
+
+    self._presentation.bind('slideChanged', function (e, index, slide) {
+      if (slide) {
+        self._toolbarElement.children('.remove,.up,.down').
+          removeClass('disabled');
+      }
+      else {
+        self._toolbarElement.children('.remove,.up,.down').
+          addClass('disabled');
+      }
     });
   }
 
@@ -95,27 +145,31 @@ define(['element', 'presenter'], function (Element, Presenter) {
   };
 
   List.prototype.gotoSlideByIndex = function (index) {
-    var scrollTop, slideHeigt, slideTop, slideBottom;
-
     if (this._currentEntry) {
       this._currentEntry.presenter.removeClass('active');
     }
     this._currentEntry = this._entries[index];
     this._currentEntry.presenter.addClass('active');
 
-    scrollTop = this._entriesElement.scrollTop();
-    slideHeight = this._currentEntry.presenter.height();
-    slideTop = slideHeight * index;
-    slideBottom = slideTop + slideHeight;
-
-    if (slideTop < scrollTop) {
-      this._entriesElement.scrollTop(slideTop);
-    }
-    else if (slideBottom > scrollTop + this._entriesElement.height()) {
-      this._entriesElement.scrollTop(slideBottom - 
-        this._entriesElement.height());
-    }
+    scrollEntryIntoView(this, this._currentEntry);
   };
+
+  function scrollEntryIntoView(self, entry) {
+    var scrollTop, entryHeigt, entryTop, entryBottom, listHeight;
+
+    scrollTop = self._entriesElement.scrollTop();
+    entryHeight = entry.presenter.height();
+    entryTop = entry.presenter.top();
+    entryBottom = scrollTop + entryTop + entryHeight;
+    listHeight = self._entriesElement.height();
+
+    if (entryTop < 0) {
+      self._entriesElement.scrollTop(scrollTop + entryTop);
+    }
+    else if (entryBottom > scrollTop + listHeight) {
+      self._entriesElement.scrollTop(entryBottom - listHeight);
+    }
+  }
 
   return List;
 

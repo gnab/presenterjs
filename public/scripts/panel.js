@@ -17,6 +17,16 @@ define(['element', 'list', 'editor'], function (Element, List, Editor) {
     this.addTab('edit', 'Edit slide', editor);
 
     this.gotoTab('list');
+    this.disableTab('edit');
+
+    presentation.bind('slideChanged', function (e, index, slide) {
+      if (slide) {
+        self.enableTab('edit');
+      }
+      else {
+        self.disableTab('edit');
+      }
+    });
 
     list.bind('slideOpened', function (e, slide) {
       self.gotoTab('edit');
@@ -26,23 +36,32 @@ define(['element', 'list', 'editor'], function (Element, List, Editor) {
   }
 
   Panel.prototype.loadKeybordEvents = function (presentation) {
-    var self = this;
+    var self = this, slide;
+
     $(document).keydown(function (e) {
       if (self._currentTab.id === 'list') {
         if (e.keyCode === 38) {
-          presentation.movePrevious();
+          if (e.shiftKey) {
+            slide = presentation.getCurrentSlide();
+            slide && presentation.moveSlideUp(slide);
+          } else {
+            presentation.movePrevious();
+          }
         }
         else if (e.keyCode === 40) {
-          presentation.moveNext();
+          if (e.shiftKey) {
+            slide = presentation.getCurrentSlide();
+            slide && presentation.moveSlideDown(slide);
+          } else {
+            presentation.moveNext();
+          }
         }
         else if (e.keyCode === 45) {
           presentation.addSlide();
         }
         else if (e.keyCode === 46) {
-          var slide = presentation.getCurrentSlide();
-          if (slide) {
-            presentation.removeSlide(slide);
-          }
+          slide = presentation.getCurrentSlide();
+          slide && presentation.removeSlide(slide);
         }
       }
       else if (self._currentTab.id === 'edit') {
@@ -76,7 +95,7 @@ define(['element', 'list', 'editor'], function (Element, List, Editor) {
   };
 
   Panel.prototype.addTab = function (id, title, element) {
-    var self = this, tab = $('<li></li>'),
+    var self = this, tab = new Element('<li></li>'),
         tabContent = $('<a href="#">' + title + '</a>');
 
     tab.append(tabContent);
@@ -90,31 +109,46 @@ define(['element', 'list', 'editor'], function (Element, List, Editor) {
     };
 
     tabContent.bind('click', function () {
-      self.gotoTab(id);
+      if (!tabContent.hasClass('disabled')) {
+        self.gotoTab(id);
+      }
     });
   };
+
+  Panel.prototype.enableTab = function (id) {
+    var tab = this._tabs[id];
+
+    if (tab) {
+      tab.header.removeClass('disabled');
+    }
+  }
+
+  Panel.prototype.disableTab = function (id) {
+    var tab = this._tabs[id];
+
+    if (tab) {
+      tab.header.addClass('disabled');
+    }
+  }
 
   Panel.prototype.gotoTab = function (id) {
     var switchToTab, tabHeight;
 
-    if (id) {
-      switchToTab = this._tabs[id];
-      if (switchToTab) {
-        if (this._currentTab) {
-          this._currentTab.header.removeClass('active');
-          this._currentTab.content.blur();
-          this._currentTab.content.hide();
-        }
-        tabHeight = this.height() - this._headerElement.height();
-        this._currentTab = switchToTab;
-        this._currentTab.header.addClass('active');
-        this._currentTab.content.show();
-        this._currentTab.content.resize(undefined, undefined, 
-          this.innerWidth(), tabHeight);
-        this._currentTab.content.focus();
+    switchToTab = this._tabs[id];
+    if (switchToTab) {
+      if (this._currentTab) {
+        this._currentTab.header.removeClass('active');
+        this._currentTab.content.blur();
+        this._currentTab.content.hide();
       }
+      tabHeight = this.height() - this._headerElement.height();
+      this._currentTab = switchToTab;
+      this._currentTab.header.addClass('active');
+      this._currentTab.content.show();
+      this._currentTab.content.resize(undefined, undefined, 
+        this.innerWidth(), tabHeight);
+      this._currentTab.content.focus();
     }
-    return this._currentTab && this._currentTab.id;
   }
 
   return Panel;

@@ -18,7 +18,7 @@ define(['element'], function (Element) {
     loadSoftTabsBackspace(this);
 
     presentation.bind('slideChanged', function (e, index, slide) {
-      self._textElement.val(slide.content());
+      self._textElement.val(slide && slide.content() || '');
     });
 
     onInput = function () {

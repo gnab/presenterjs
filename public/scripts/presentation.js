@@ -30,6 +30,38 @@ define(['model', 'slide'], function (Model, Slide) {
     this.trigger('contentChanged', slide.content());
   };
 
+  Presentation.prototype.moveSlideUp = function (slide) {
+    var index = this._slides.indexOf(slide),
+        newIndex = index - 1;
+
+    if (newIndex >= 0) {
+      this._slides.splice(index, 1);
+      this._slides.splice(newIndex, 0, slide);
+
+      if (this._currentSlideIndex === index) {
+        this._currentSlideIndex = newIndex;
+      }
+
+      this.trigger('slideMoved', [index, newIndex, slide]);
+    }
+  };
+
+  Presentation.prototype.moveSlideDown = function (slide) {
+    var index = this._slides.indexOf(slide),
+        newIndex = index + 1;
+
+    if (newIndex < this._slides.length) {
+      this._slides.splice(index, 1);
+      this._slides.splice(newIndex, 0, slide);
+
+      if (this._currentSlideIndex === index) {
+        this._currentSlideIndex = newIndex;
+      }
+
+      this.trigger('slideMoved', [index, newIndex, slide]);
+    }
+  };
+
   Presentation.prototype.removeSlide = function (slide) {
     var slideIndex = this._slides.indexOf(slide), nextIndex;
 
@@ -42,6 +74,7 @@ define(['model', 'slide'], function (Model, Slide) {
     if (this._slides.length === 0) {
       this._currentSlide = undefined;
       this._currentSlideIndex = undefined;
+      this.trigger('slideChanged', [-1, null]);
       this.trigger('contentChanged', '');
     }
     else {

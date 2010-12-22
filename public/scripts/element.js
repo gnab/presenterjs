@@ -14,8 +14,17 @@ define(function () {
     append: function (element) {
       this._element.append(element._element || element);
     },
+    after: function (element) {
+      this._element.after(element._element || element);
+    },
+    before: function (element) {
+      this._element.before(element._element || element);
+    },
     remove: function () {
       this._element.remove();
+    },
+    detach: function () {
+      this._element.detach();
     },
     find: function (query) {
       return this._element.find(query);
@@ -64,6 +73,9 @@ define(function () {
     },
     height: function () {
       return this._element.outerHeight();
+    },
+    top : function () {
+      return this._element.position().top;
     },
     selectionStart: function (pos) {
       if (pos !== undefined) {

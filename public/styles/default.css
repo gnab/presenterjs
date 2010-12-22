@@ -45,6 +45,9 @@ h1, h2, h3, h4, h5, h6 {
   position: relative;
   overflow: hidden;
 }
+a.disabled {
+  opacity: 0.3;
+}
 #panel {
   background: #f8f8f8;
   border-right: 1px solid #c6c4c3;
@@ -117,6 +120,12 @@ h1, h2, h3, h4, h5, h6 {
 .toolbar .remove {
   background: url(../images/delete.png) no-repeat;
 }
+.toolbar .up {
+  background: url(../images/up.png) no-repeat;
+}
+.toolbar .down {
+  background: url(../images/down.png) no-repeat;
+}
 .toolbar .bold {
   background: url(../images/bold.png) no-repeat;
 }
@@ -138,6 +147,7 @@ h1, h2, h3, h4, h5, h6 {
 #list .entries {
   overflow-x: hidden;
   overflow-y: scroll;
+  position: relative;
 }
 #list .presenter {
   background: #fff;
