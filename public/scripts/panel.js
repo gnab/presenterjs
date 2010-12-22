@@ -100,6 +100,7 @@ define(['element', 'list', 'editor'], function (Element, List, Editor) {
 
     tab.append(tabContent);
     this._tabsElement.append(tab);
+    element.hide();
 
     this._tabs[id] = { 
       id: id, 

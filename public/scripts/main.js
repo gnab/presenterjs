@@ -64,7 +64,7 @@ define(['common', 'element', 'panel', 'presenter', 'presentation'],
     panel.resize(0, 0, panelWidth, container.height());
 
     splitter.resizeElement(panel.width(), 0, undefined, 
-      container.width());
+      container.height());
 
     presenter.resize(panel.width(), 0, container.width() - panel.width(), 
       container.height());
