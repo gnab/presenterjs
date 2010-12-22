@@ -20,9 +20,7 @@ define(['model', 'slide'], function (Model, Slide) {
 
     this._slides.push(slide);
     this.trigger('slideAdded', slide);
-    if (!this._currentSlide) {
-      this.gotoSlide(slide);
-    }
+    this.gotoSlide(slide);
   };
 
   Presentation.prototype.gotoSlide = function (slide) {
