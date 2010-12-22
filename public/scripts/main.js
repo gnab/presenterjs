@@ -48,17 +48,17 @@ define(['common', 'element', 'panel', 'presenter', 'presentation'],
       resize(panel.innerWidth());
     });
 
-    resize(Math.floor(container.width() * 0.33));
+    resize(Math.floor(container.width() * 0.275));
   }
 
   function resize(panelWidth) {
     var container = $(window);
 
-    if (panelWidth < container.width() * 0.2) {
-      panelWidth = Math.floor(container.width() * 0.2);
+    if (panelWidth < container.width() * 0.275) {
+      panelWidth = Math.floor(container.width() * 0.275);
     }
-    else if (panelWidth > container.width() * 0.8) {
-      panelWidth = Math.floor(container.width() * 0.8);
+    else if (panelWidth > container.width() * 0.725) {
+      panelWidth = Math.floor(container.width() * 0.725);
     }
 
     panel.resize(0, 0, panelWidth, container.height());
