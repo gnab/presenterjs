@@ -111,7 +111,7 @@ define(['element', 'presenter'], function (Element, Presenter) {
     if (slideTop < scrollTop) {
       this._entriesElement.scrollTop(slideTop);
     }
-    else if (slideBottom > scrollTop + this.height()) {
+    else if (slideBottom > scrollTop + this._entriesElement.height()) {
       this._entriesElement.scrollTop(slideBottom - 
         this._entriesElement.height());
     }
