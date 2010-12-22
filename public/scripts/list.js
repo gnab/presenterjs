@@ -47,26 +47,18 @@ define(['element', 'presenter'], function (Element, Presenter) {
   }
 
   List.prototype.resize = function (left, top, width, height) {
-    var key, toolbarHeight = this._toolbarElement.height();
+    var i, innerWidth = this._entriesElement.innerWidth();
 
     this.resizeElement(left, top, width, height);
     this._entriesElement.resizeElement(undefined, undefined,
-      width, height - toolbarHeight);
+      width, height - this._toolbarElement.height());
 
-    this.resizeEntries();
+    for (i = 0; i < this._entries.length; i++) {
+      this._entries[i].presenter.resize(undefined, undefined, innerWidth, 
+        undefined); 
+    }
   };
 
-  List.prototype.resizeEntries = function () {
-    var width = this._entriesElement.innerWidth();
-
-    for (key in this._entries) {
-      if (this._entries.hasOwnProperty(key)) {
-        this._entries[key].presenter.resize(undefined, undefined, width, 
-          undefined); 
-      }
-    }
-  }
-  
   List.prototype.addSlide = function(slide) {
     var self = this, presenter = new Presenter('<div />', slide);
 
@@ -76,8 +68,6 @@ define(['element', 'presenter'], function (Element, Presenter) {
     presenter.content(slide.content());
     presenter.resize(undefined, undefined, 
       this._entriesElement.innerWidth(), undefined);
-
-    this.resizeEntries();
 
     presenter.bind('click', function () {
       self._presentation.gotoSlide(slide);
@@ -100,8 +90,6 @@ define(['element', 'presenter'], function (Element, Presenter) {
 
     entry.presenter.remove();
     delete entry;
-
-    this.resizeEntries();
 
     this._entries.splice(index, 1);
   };

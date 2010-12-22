@@ -56,6 +56,9 @@ define(function () {
     innerWidth: function () {
       return this._element[0].clientWidth;
     },
+    innerHeight: function () {
+      return this._element[0].clientHeight;
+    },
     width: function () {
       return this._element.outerWidth();
     },

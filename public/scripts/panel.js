@@ -95,17 +95,22 @@ define(['element', 'list', 'editor'], function (Element, List, Editor) {
   };
 
   Panel.prototype.gotoTab = function (id) {
+    var switchToTab, tabHeight;
+
     if (id) {
-      var switchToTab = this._tabs[id];
+      switchToTab = this._tabs[id];
       if (switchToTab) {
         if (this._currentTab) {
           this._currentTab.header.removeClass('active');
           this._currentTab.content.blur();
           this._currentTab.content.hide();
         }
+        tabHeight = this.height() - this._headerElement.height();
         this._currentTab = switchToTab;
         this._currentTab.header.addClass('active');
         this._currentTab.content.show();
+        this._currentTab.content.resize(undefined, undefined, 
+          this.innerWidth(), tabHeight);
         this._currentTab.content.focus();
       }
     }
