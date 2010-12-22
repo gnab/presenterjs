@@ -36,7 +36,7 @@ define(['element', 'list', 'editor'], function (Element, List, Editor) {
           presentation.moveNext();
         }
         else if (e.keyCode === 45) {
-          presentation.addSlide('');
+          presentation.addSlide();
         }
         else if (e.keyCode === 46) {
           var slide = presentation.getCurrentSlide();

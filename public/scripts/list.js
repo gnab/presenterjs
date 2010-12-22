@@ -13,7 +13,7 @@ define(['element', 'presenter'], function (Element, Presenter) {
     this._presentation = presentation;
 
     this._toolbarElement.children('.add').bind('click', function () {
-      presentation.addSlide('empty slide');
+      presentation.addSlide();
     });
 
     this._toolbarElement.children('.remove').bind('click', function () {

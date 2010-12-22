@@ -9,10 +9,10 @@ define(['model', 'slide'], function (Model, Slide) {
 
   Presentation.prototype.title = Model.createProperty('title');
 
-  Presentation.prototype.addSlide = function (content) {
+  Presentation.prototype.addSlide = function () {
     var self = this, slide;
     
-    slide = new Slide(content);
+    slide = new Slide('');
 
     slide.bind('contentChanged', function (e, content) {
       self.trigger('contentChanged', content);
