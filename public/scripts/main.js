@@ -3,6 +3,10 @@ define(['common', 'element', 'panel', 'presenter', 'presentation'],
 
   var panel, splitter, presenter;
 
+  $(document).ready(function () {
+    loadEnvironment();
+  });
+
   function loadEnvironment() {
     var presentation = new Presentation();
 
@@ -69,7 +73,5 @@ define(['common', 'element', 'panel', 'presenter', 'presentation'],
     presenter.resize(panel.width(), 0, container.width() - panel.width(), 
       container.height());
   }
-
-  loadEnvironment();
 
 });
