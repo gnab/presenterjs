@@ -56,6 +56,12 @@ define(function () {
     hide: function () {
       this._element.hide();
     },
+    toggle: function () {
+      this._element.toggle();
+    },
+    isVisible: function () {
+      return this._element.is(':visible');
+    },
     focus: function () {
       this._element.focus();
     },

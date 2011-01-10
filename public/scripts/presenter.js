@@ -107,16 +107,16 @@ define(['element', 'common'], function (Element, common) {
   function createScalerForEngine(element, engine) {
     var style = {}, scaler;
 
-    engine = formatEngineString(engine);
+    engineStr = formatEngineString(engine);
 
     scaler = function (scale) {
       var style = {};
-      style[engine + 'transform'] = 
+      style[engineStr + 'transform'] = 
         'scale(' + scale + ')';
       element.css(style);
     };
 
-    style[engine + 'transform-origin'] = '0 0';
+    style[engineStr + 'transform-origin'] = '0 0';
     element.css(style);
 
     return scaler;
@@ -151,13 +151,13 @@ define(['element', 'common'], function (Element, common) {
     return id; 
   }
 
-  function resizeSlide(element, shadow, width, height, scaleSlide) {
+  function resizeSlide(element, frame, width, height, scaleSlide) {
     var dimensions = calculateSlideDimensions(width, height); 
 
     common.resizeElement(element, dimensions.left, dimensions.top,
       dimensions.width, dimensions.height);
 
-    common.resizeElement(shadow, dimensions.left - 1, dimensions.top - 1,
+    common.resizeElement(frame, dimensions.left - 1, dimensions.top - 1,
       Math.ceil(dimensions.width * dimensions.scale) + 2,
       Math.ceil(dimensions.height * dimensions.scale) + 2);
 

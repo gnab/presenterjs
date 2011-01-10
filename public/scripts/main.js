@@ -16,6 +16,7 @@ define(['common', 'element', 'panel', 'presenter', 'presentation'],
 
     loadLayout();
     loadSplitter();
+    loadKeybordEvents();
   }
 
   function loadSplitter() {
@@ -67,11 +68,26 @@ define(['common', 'element', 'panel', 'presenter', 'presentation'],
 
     panel.resize(0, 0, panelWidth, container.height());
 
-    splitter.resizeElement(panel.width(), 0, undefined, 
+    panelWidth = panel.isVisible() ? panel.width() : 0;
+
+    splitter.resizeElement(panelWidth, 0, undefined, 
       container.height());
 
-    presenter.resize(panel.width(), 0, container.width() - panel.width(), 
+    presenter.resize(panelWidth, 0, container.width() - panelWidth, 
       container.height());
+  }
+
+  function loadKeybordEvents() {
+    $(document).keydown(function (e) {
+      if (e.keyCode === 122) {
+        if (e.shiftKey) {
+          panel.toggle();
+          splitter.toggle();
+
+          resize(panel.innerWidth());
+        }
+      }
+    });
   }
 
 });
