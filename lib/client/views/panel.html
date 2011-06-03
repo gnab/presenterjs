@@ -1,0 +1,12 @@
+<div class="header">
+  PresenterJS BETA
+  <br /><br />
+  <ul data-bind="template: {name: 'tabTemplate', foreach: tabs}"></ul>
+  <div style="clear: both"></div>
+</div>
+<div class="toolbar" data-bind="template: {name: 'commandTemplate', foreach: commands}">
+</div>
+<div id="list" data-bind="template: {name: 'listTemplate', data: list}">
+</div>
+<div id="editor" data-bind="template: {name: 'editorTemplate', data: editor}">
+</div>

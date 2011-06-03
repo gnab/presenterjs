@@ -1,5 +1,14 @@
 var express = require('express')
-  , fs = require('fs');
+  , fs = require('fs')
+  , bundle = require('./lib/bundle');
+
+var bundlePaths = [
+    './public/scripts/vendor'
+  , './lib/client'
+  ]
+  , bundleTarget = './public/scripts/presenter.js';
+
+bundle(bundlePaths, bundleTarget);
 
 var app = express.createServer(express.logger());
 
@@ -13,7 +22,4 @@ app.get('/', function(request, response) {
   });
 });
 
-var port = process.env.PORT || 3000;
-console.log("Listening on " + port);
-
-app.listen(port);
+app.listen(process.env.PORT || 3000);

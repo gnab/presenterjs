@@ -16,15 +16,23 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
   margin-bottom: 0;
 }
+.hidden {
+  display: none;
+}
 #splitter {
   background: #edece9;
   cursor: w-resize;
-  position: absolute;
+  float: left;
+  height: 100%;
   width: 10px;
   z-index: 1;
 }
 #splitter:hover, #splitter.resizing {
   background: #e4e3e0;
+}
+#presenter {
+  height: 100%;
+  margin-left: 360px;
 }
 .presenter {
   background: #edece9;
@@ -51,7 +59,9 @@ a.disabled {
 #panel {
   background: #f8f8f8;
   border-right: 1px solid #c6c4c3;
-  position: absolute;
+  float: left;
+  height: 100%;
+  width: 350px;
 }
 #panel .header {
   border-bottom: 1px solid #eee;
@@ -87,7 +97,7 @@ a.disabled {
   background: #eee;
   border-color: #eee;
 }
-#panel li a.active {
+#panel li a.selected {
   background: #fff;
   border-color: #eee;
   color: #000;
@@ -135,7 +145,7 @@ a.disabled {
 .toolbar .link {
   background: url(../images/link.png) no-repeat;
 }
-.toolbar .code {
+.toolbar .code-block {
   background: url(../images/code.png) no-repeat;
 }
 .toolbar .inline-code {
@@ -143,8 +153,10 @@ a.disabled {
 }
 #list {
   background: #fff;
+  height: 200px;
 }
 #list .entries {
+  height: 100%;
   overflow-x: hidden;
   overflow-y: scroll;
   position: relative;
