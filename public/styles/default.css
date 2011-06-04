@@ -61,27 +61,35 @@ a.disabled {
   border-right: 1px solid #c6c4c3;
   float: left;
   height: 100%;
+  position: relative;
   width: 350px;
 }
 #panel .header {
   border-bottom: 1px solid #eee;
+  position: absolute;
+  height: 100px;
+  width: 100%;
 } 
 #panel .content {
-  border: 1px solid red;
+  bottom: 0;
+  position: absolute;
+  top: 144px;
+  width: 100%;
 }
-#panel ul {
+#panel .header ul {
+  bottom: 0;
   left: 10px; 
   list-style: none;
   margin: 0;
   padding: 0;
-  position: relative;
+  position: absolute;
 }
-#panel li {
+#panel .header li {
   float: left;
   position: relative;
   top: 1px;
 }
-#panel li a {
+#panel .header li a {
   border: 1px solid transparent;
   border-bottom-width: 0;
   border-top-left-radius: 4px 4px;
@@ -96,11 +104,11 @@ a.disabled {
   line-height: 2em;
   text-decoration: none;
 }
-#panel li a:hover {
+#panel .header li a:hover {
   background: #eee;
   border-color: #eee;
 }
-#panel li a.selected {
+#panel .header li a.selected {
   background: #fff;
   border-color: #eee;
   color: #000;
@@ -111,17 +119,20 @@ a.disabled {
   border-bottom: 1px solid #eee;
   font-family: 'Helvetica Neue', Arial, Helvetica, 'Liberation Sans', FreeSans, sans-serif;
   font-size: 0.8em;
-  padding: 1em 1em 1em 1.5em;
+  height: 16px;
+  padding: 12px 0;
+  position: absolute;
+  top: 101px;
+  width: 100%;
+}
+.toolbar .buttons {
+  margin-left: 20px;
 }
 .toolbar a {
   color: #777;
   margin-right: 10px;
   padding-left: 20px;
   text-decoration: none;
-}
-.toolbar a.notext {
-  margin-right: 6px;
-  padding-left: 16px;
 }
 .toolbar a:hover {
   color: #000;
@@ -156,7 +167,7 @@ a.disabled {
 }
 #list {
   background: #fff;
-  height: 200px;
+  height: 100%;
 }
 #list .entries {
   height: 100%;
@@ -187,8 +198,18 @@ a.disabled {
 }
 #editor {
   background: #fff;
+  height: 100%;
   position: relative;
 }
+#editor .padding {
+  bottom: 18px;
+  left: 12px;
+  position: absolute;
+  right: 18px;
+  top: 12px;
+}
 #editor textarea {
+  height: 100%;
   position: relative;
+  width: 100%;
 }
