@@ -1,13 +1,14 @@
 require.paths.unshift('lib', 'lib/server');
 
-var express = require('express')
+var bundle = require('bundle')
   , config = require('./config')  
-  , fs = require('fs')
-  , bundle = require('bundle')
-  , dropbox = require('dropbox')
   , colors = require('colors')
   , crypto = require('crypto')
+  , dropbox = require('dropbox')
   , everyauth = require('everyauth')
+  , express = require('express')
+  , fs = require('fs')
+  , stylus = require('stylus')
   ;
 
 var bundlePaths = [
@@ -31,6 +32,13 @@ app.configure(function () {
 	    ' :remote-addr :user-agent'.cyan +
 	    ' -' +
 	    ' :date'.light_gray
+  }));
+  app.use(stylus.middleware({
+    src: __dirname + '/views'
+  , dest: __dirname + '/public'
+  , compile: function (str) {
+    return stylus(str).set('compress', true);
+  }
   }));
   app.use(express.static(__dirname + '/public'));
   app.use(express.bodyParser());
@@ -74,4 +82,8 @@ app.get('/authorized', function (req, res) {
 app.get('/edit/presenterjs/:file', dropbox.secure, dropbox.file, function (req, res) {
   var file = req.params.file;
   res.render('edit', { 'presentation': file, 'data': req.data });
+});
+
+app.get('/edit', function (req, res) {
+  res.render('edit', {'data': 'test'});
 });
