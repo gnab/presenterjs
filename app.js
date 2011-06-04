@@ -71,10 +71,7 @@ app.get('/authorized', function (req, res) {
   res.redirect('/');
 });
 
-app.get('/edit/:presentation', dropbox.secure, function (req, res) {
-  var presentation = req.params.presentation;
-  res.render('edit', { 'presentation': presentation });
+app.get('/edit/presenterjs/:file', dropbox.secure, dropbox.file, function (req, res) {
+  var file = req.params.file;
+  res.render('edit', { 'presentation': file, 'data': req.data });
 });
-
-
-
