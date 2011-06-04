@@ -1,2 +1,4 @@
+*.swp
 node_modules
 config.js
+public/scripts/presenter.js
