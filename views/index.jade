@@ -1,0 +1,11 @@
+h1 PresenterJS
+- if (user)
+  h2 Welcome!
+  p Welcome #{user.display_name}!
+  p 
+    a(href='/list') List
+- else
+  h2 We <3 Dropbox
+  p This site uses dropbox to store your presentations. Please log in.
+
+p!= partial('login.jade')
