@@ -1,7 +1,7 @@
 <div class="header">
   PresenterJS BETA
   <br /><br />
-  <ul data-bind="template: {name: 'tabTemplate', foreach: tabs}"></ul>
+  <ul data-bind="template: {name: 'tabTemplate', foreach: tabs, templateOptions: {selectTab: function (tab) {selectTab(tab)} } }"></ul>
   <div style="clear: both"></div>
 </div>
 <div class="toolbar" data-bind="template: {name: 'commandTemplate', foreach: commands}">
