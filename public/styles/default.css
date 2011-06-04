@@ -66,6 +66,9 @@ a.disabled {
 #panel .header {
   border-bottom: 1px solid #eee;
 } 
+#panel .content {
+  border: 1px solid red;
+}
 #panel ul {
   left: 10px; 
   list-style: none;
