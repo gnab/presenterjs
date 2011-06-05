@@ -79,9 +79,13 @@ app.get('/authorized', function (req, res) {
   res.redirect('/');
 });
 
+app.post('/edit/presenterjs/:file', dropbox.save, function (req, res) {
+  res.send(req.data);
+});
+
 app.get('/edit/presenterjs/:file', dropbox.secure, dropbox.file, function (req, res) {
   var file = req.params.file;
-  res.render('edit', { 'presentation': file, 'data': req.data });
+  res.render('edit', { 'file': file, 'data': req.data });
 });
 
 app.get('/edit', function (req, res) {
