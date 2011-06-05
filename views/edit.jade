@@ -2,4 +2,6 @@ div.panel(data-bind= "template: { name: 'panelTemplate', data: panel }")
 div.splitter
 div#presenter
 script
-  var data = '#{data}';
+  presenter.onready(function () {
+    new presenter.viewmodels.Presenter('#{data}');
+  });
