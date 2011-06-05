@@ -1,3 +1,17 @@
+box-shadow()
+  -webkit-box-shadow: 0 0 arguments
+  -moz-box-shadow: 0 0 arguments
+  box-shadow: 0 0 arguments
+
+content-fonts = Georgia
+control-fonts = "Helvetica Neue", Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif
+code-fonts = mono, Monaco, Consolas, "Lucida Console", "Courier New"
+
+toolbar-border-color = #eee
+gutter-color = #edece9
+frame-color = #c6c4c3
+slide-color = #fff
+
 html, body
   height: 100%
   margin: 0
@@ -5,211 +19,163 @@ html, body
   padding: 0
 
 body
-  font-family: Georgia
+  font-family: content-fonts
   font-size: 100%
 
 code, textarea
-  font-family: mono, Monaco, Consolas, "Lucida Console", "Courier New"
+  font-family: code-fonts
   font-size: 0.9em
 
 h1, h2, h3, h4, h5, h6
   margin-top: 0
   margin-bottom: 0
 
+a.disabled
+  opacity: 0.3
+
 .hidden
   display: none
 
-#splitter
-  background: #edece9
+.splitter
+  background: gutter-color
   cursor: w-resize
   float: left
   height: 100%
   width: 10px
   z-index: 1
-
-#splitter:hover, #splitter.resizing
-  background: #e4e3e0
+  &:hover, &.resizing
+    background: #e4e3e0
 
 #presenter
   height: 100%
   margin-left: 360px
 
 .presenter
-  background: #edece9
+  background: gutter-color
   overflow: hidden
   position: relative
 
 .frame
-  border: 1px solid #c6c4c3
-  background: #fff
+  border: 1px solid frame-color
+  background: slide-color
   position: absolute
-  -webkit-box-shadow: 0 0 15px #ccc
-  -moz-box-shadow: 0 0 15px #ccc
-  box-shadow: 0 0 15px #ccc
+  box-shadow: 15px #ccc
 
 .slide
-  background: #fff
+  background: slide-color
   border: 1px solid transparent
   position: relative
   overflow: hidden
 
-a.disabled
-  opacity: 0.3
-
-#panel
+.panel
   background: #f8f8f8
-  border-right: 1px solid #c6c4c3
+  border-right: 1px solid frame-color
   float: left
   height: 100%
   position: relative
   width: 350px
 
-#panel .header
-  border-bottom: 1px solid #eee
-  position: absolute
-  height: 100px
-  width: 100%
+  .header
+    border-bottom: 1px solid toolbar-border-color
+    position: absolute
+    height: 100px
+    width: 100%
+    ul
+      bottom: 0
+      left: 10px
+      list-style: none
+      margin: 0
+      padding: 0
+      position: absolute
+      li
+        float: left
+        position: relative
+        top: 1px
+        a
+          border: 1px solid transparent
+          border-bottom-width: 0
+          border-top-left-radius: 4px 4px
+          border-top-right-radius: 4px 4px
+          -moz-border-radius-topleft: 4px 4px
+          -moz-border-radius-topright: 4px 4px
+          color: #4cab00
+          display: block
+          font-family: control-fonts 
+          font-size: 0.8em
+          padding: 3px 10px 2px 10px
+          line-height: 2em
+          text-decoration: none
+          &:hover
+            background: #eee
+            border-color: #eee
+        .selected
+          background: #fff
+          border-color: toolbar-border-color
+          color: #000
+          font-weight: bold
 
-#panel .content
-  bottom: 0
-  position: absolute
-  top: 144px
-  width: 100%
+  .toolbar
+    background: #fff
+    border-bottom: 1px solid toolbar-border-color
+    font-family: control-fonts
+    font-size: 0.8em
+    height: 16px
+    padding: 12px 0
+    position: absolute
+    top: 101px
+    width: 100%
+    a
+      color: #777
+      margin-right: 10px
+      padding-left: 20px
+      text-decoration: none
+      &:hover
+        color: #000
+        text-decoration: underline
+    .buttons
+      margin-left: 20px
+      for button in add remove up down bold italic link inline-code code-block
+        .{button}
+          background: url(join('', '../images/', button, '.png')) no-repeat
 
-#panel .header ul
-  bottom: 0
-  left: 10px
-  list-style: none
-  margin: 0
-  padding: 0
-  position: absolute
+  .content
+    bottom: 0
+    position: absolute
+    top: 144px
+    width: 100%
 
-#panel .header li
-  float: left
-  position: relative
-  top: 1px
+  .list
+    background: #fff
+    height: 100%
+    .entries
+      height: 100%
+      overflow-x: hidden
+      overflow-y: scroll
+      position: relative
+      .presenter
+        background: #fff
+        &:hover
+          background: #e5f2ed
+        .frame
+          border: 1px solid #d6d4d3
+          box-shadow: 15px #eee
+      .active
+        background: #f5f5f5
+        .frame
+          border: 1px solid #d6d4d3
+          box-shadow: 15px #ddd
 
-#panel .header li a
-  border: 1px solid transparent
-  border-bottom-width: 0
-  border-top-left-radius: 4px 4px
-  border-top-right-radius: 4px 4px
-  -moz-border-radius-topleft: 4px 4px
-  -moz-border-radius-topright: 4px 4px
-  color: #4cab00
-  display: block
-  font-family: "Helvetica Neue", Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif
-  font-size: 0.8em
-  padding: 3px 10px 2px 10px
-  line-height: 2em
-  text-decoration: none
-
-#panel .header li a:hover
-  background: #eee
-  border-color: #eee
-
-#panel .header li a.selected
-  background: #fff
-  border-color: #eee
-  color: #000
-  font-weight: bold
-
-.toolbar
-  background: #fff
-  border-bottom: 1px solid #eee
-  font-family: "Helvetica Neue", Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif
-  font-size: 0.8em
-  height: 16px
-  padding: 12px 0
-  position: absolute
-  top: 101px
-  width: 100%
-
-.toolbar .buttons
-  margin-left: 20px
-
-.toolbar a
-  color: #777
-  margin-right: 10px
-  padding-left: 20px
-  text-decoration: none
-
-.toolbar a:hover
-  color: #000
-  text-decoration: underline
-
-.toolbar .add
-  background: url("../images/add.png") no-repeat
-
-.toolbar .remove
-  background: url("../images/delete.png") no-repeat
-
-.toolbar .up
-  background: url("../images/up.png") no-repeat
-
-.toolbar .down
-  background: url("../images/down.png") no-repeat
-
-.toolbar .bold
-  background: url("../images/bold.png") no-repeat
-
-.toolbar .italic
-  background: url("../images/italic.png") no-repeat
-
-.toolbar .link
-  background: url("../images/link.png") no-repeat
-
-.toolbar .code-block
-  background: url("../images/code.png") no-repeat
-
-.toolbar .inline-code
-  background: url("../images/inline-code.png") no-repeat
-
-#list
-  background: #fff
-  height: 100%
-
-#list .entries
-  height: 100%
-  overflow-x: hidden
-  overflow-y: scroll
-  position: relative
-
-#list .presenter
-  background: #fff
-
-#list .presenter:hover
-  background: #e5f2ed
-
-#list .active
-  background: #f5f5f5
-
-#list .frame
-  border: 1px solid #d6d4d3
-  -webkit-box-shadow: 0 0 15px #eee
-  -moz-box-shadow: 0 0 15px #eee
-  box-shadow: 0 0 15px #eee
-
-#list .active .frame
-  border: 1px solid #d6d4d3
-  -webkit-box-shadow: 0 0 15px #ddd
-  -moz-box-shadow: 0 0 15px #ddd
-  box-shadow: 0 0 15px #ddd
-
-#editor
-  background: #fff
-  height: 100%
-  position: relative
-
-#editor .padding
-  bottom: 18px
-  left: 12px
-  position: absolute
-  right: 18px
-  top: 12px
-
-#editor textarea
-  height: 100%
-  position: relative
-  width: 100%
-
+  .editor
+    background: #fff
+    height: 100%
+    position: relative
+    .padding
+      bottom: 18px
+      left: 12px
+      position: absolute
+      right: 18px
+      top: 12px
+      textarea
+        height: 100%
+        position: relative
+        width: 100%
