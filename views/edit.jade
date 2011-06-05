@@ -1,6 +1,9 @@
 div.panel(data-bind= "template: { name: 'panelTemplate', data: panel }")
 div.splitter
-div#presenter
+div#presenter.presenter
+  div.frame
+  div.slide
+    div.slideContent(data-bind= "afterRender: resizeSlide()") 
 script
   presenter.onready(function () {
     var file = '#{file}';
