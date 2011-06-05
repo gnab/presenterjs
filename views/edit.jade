@@ -3,5 +3,7 @@ div.splitter
 div#presenter
 script
   presenter.onready(function () {
-    new presenter.viewmodels.Presenter('#{data}');
+    var file = '#{file}';
+    var data = '#{data}';
+    new presenter.viewmodels.Presenter(file, data);
   });
