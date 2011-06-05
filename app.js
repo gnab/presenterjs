@@ -89,5 +89,5 @@ app.get('/edit/presenterjs/:file', dropbox.secure, dropbox.file, function (req, 
 });
 
 app.get('/edit', function (req, res) {
-  res.render('edit', {'data': 'test'});
+  res.render('edit', { 'file': 'gakk', 'data': 'test'});
 });

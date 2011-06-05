@@ -1,3 +1,3 @@
 <div class="list" data-bind="css: {hidden: !selected()}">
-  <div class="entries"></div>
+  <div class="entries" data-bind="template: {name: 'slideTemplate', foreack: items, afterRender: resizeItems }"></div>
 </div>
