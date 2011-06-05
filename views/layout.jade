@@ -3,6 +3,25 @@ html
   head
     link(rel= 'stylesheet', href= '/styles/default.css')
     link(rel= 'stylesheet', href= '/styles/vendor/highlight.min.css')
+    script.
+      var presenter = {
+        readys: [],
+        onready: function (fn, scope) {
+          if (presenter.isReady) fn.call(scope);
+          presenter.readys.push([fn, scope]);
+        },
+        ready: function () {
+          presenter.isReady = true;
+          var i, len, cb, fn, scope, cbs = presenter.readys;
+          for (i = 0, len = cbs.length; i < len, cb = cbs[i] ; i++) {
+            fn = cb[0];
+            scope = cb[1];
+            fn.call(scope || this);
+         }
+        }
+      };
   body
     != body
     script(src= '/scripts/presenter.js')
+    script
+      presenter.ready();
