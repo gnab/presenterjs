@@ -3,7 +3,4 @@
   <br /><br />
   <ul data-bind="template: {name: 'tabTemplate', foreach: tabs, templateOptions: {selectTab: selectTab} }"></ul>
 </div>
-<div class="toolbar">
-  <div class="buttons" data-bind="template: {name: 'commandTemplate', foreach: commands}"></div>
-</div>
-<div class="content" data-bind="template: {name: tabTemplate, foreach: tabs}"></div>
+<div class="content" data-bind="template: {name: contentTemplate, foreach: tabs}"></div>

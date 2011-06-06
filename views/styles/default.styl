@@ -126,8 +126,6 @@ a.disabled
     font-size: 0.8em
     height: 16px
     padding: 12px 0
-    position: absolute
-    top: 101px
     width: 100%
     a
       color: #777
@@ -146,17 +144,19 @@ a.disabled
   .content
     bottom: 0
     position: absolute
-    top: 144px
+    top: 101px
     width: 100%
 
   .list
     background: #fff
     height: 100%
     .entries
-      height: 100%
+      bottom: 0
       overflow-x: hidden
       overflow-y: scroll
-      position: relative
+      position: absolute
+      top: 42px
+      width: 100%
       .presenter
         background: #fff
         &:hover
@@ -179,7 +179,7 @@ a.disabled
       left: 12px
       position: absolute
       right: 18px
-      top: 12px
+      top: 54px
       textarea
         height: 100%
         position: relative

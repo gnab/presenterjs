@@ -1,3 +1,11 @@
 <div class="list" data-bind="css: {hidden: !selected()}">
+  <div class="toolbar">
+    <div class="buttons">
+      <a class="add" href="#" data-bind="click: addSlide">Add</a>
+      <a class="remove" href="#" data-bind="click: removeSlide">Remove</a>
+      <a class="up" href="#" data-bind="click: moveSlideUp">Up</a>
+      <a class="down" href="#" data-bind="click: moveSlideDown">Down</a>
+    </div>
+  </div>
   <div class="entries" data-bind="template: {name: 'slideTemplate', foreach: items, afterRender: resizeItems }"></div>
 </div>

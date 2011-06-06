@@ -1,4 +1,13 @@
 <div class="editor" data-bind="css: {hidden: !selected()}">
+  <div class="toolbar">
+    <div class="buttons">
+      <a class="bold" href="#" data-bind="click: formatBold"></a>
+      <a class="italic" href="#" data-bind="click: formatItalic"></a>
+      <a class="link" href="#" data-bind="click: formatLink">Link</a>
+      <a class="inline-code" href="#" data-bind="click: formatInlineCode">Inlide code</a>
+      <a class="code-block" href="#" data-bind="click: formatCodeBlock">Code block</a>
+    </div>
+  </div>
   <div class="padding">
     <textarea data-bind="value: slide.content"></textarea>
   </div>
