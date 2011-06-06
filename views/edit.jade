@@ -1,5 +1,5 @@
-div.panel(data-bind= "template: { name: 'panelTemplate', data: panel }")
-div.splitter
+div.panel(data-bind="template: { name: 'panelTemplate', data: panel }")
+div.splitter(data-bind="event: { mousedown: splitter.mousedown }, css: { resizing: splitter.resizing }")
 div#presenter.presenter
   div.frame
   div.slide
